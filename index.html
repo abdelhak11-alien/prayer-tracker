@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weekly Prayer Challenge | On-Time Tracker</title>
+  <title>Weekly Prayer Challenge | Official Standings</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,11 +25,6 @@
               800: '#065f46',
               900: '#064e3b',
               950: '#022c22',
-            },
-            gold: {
-              400: '#fbbf24',
-              500: '#f59e0b',
-              600: '#d97706',
             }
           }
         }
@@ -40,45 +35,66 @@
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-emerald-200 selection:text-emerald-900">
 
   <!-- Top Navigation & Hero Header -->
-  <header class="bg-gradient-to-br from-emerald-950 via-emerald-900 to-slate-900 text-white shadow-lg border-b border-emerald-800/60">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+  <header class="bg-gradient-to-br from-emerald-950 via-emerald-900 to-slate-900 text-white shadow-lg border-b border-emerald-800/60 relative overflow-hidden">
+    <!-- Subtle Islamic Geometric SVG Accent -->
+    <div class="absolute inset-0 opacity-5 pointer-events-none" aria-hidden="true">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+        <path fill="#fbbf24" d="M30 0l7.5 22.5L60 30l-22.5 7.5L30 60l-7.5-22.5L0 30l22.5-7.5z"/>
+      </svg>
+    </div>
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 relative z-10">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
         <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-800/60 border border-emerald-700/60 text-amber-300 text-xs font-semibold tracking-wide uppercase mb-2">
-            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1z"/></svg>
-            7-Day On-Time Prayer Challenge
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-800/70 border border-emerald-700/70 text-amber-300 text-xs font-semibold tracking-wide uppercase">
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1z"/></svg>
+              7-Day On-Time Prayer Challenge
+            </span>
+            <span id="lastPublishedBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900/70 border border-slate-700/70 text-slate-300 text-xs">
+              Updated: —
+            </span>
           </div>
+
           <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
             Sunday to Saturday <span class="text-amber-400">Prayer Race</span>
           </h1>
           <p class="text-emerald-100/80 text-sm mt-1">
-            35 total prayers per week. Check off every prayer prayed strictly on time.
+            35 total prayers per week. Strictly prayed on time.
           </p>
-          <!-- Live Auto-Save Status Pill -->
-          <div class="mt-2.5 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-950/60 border border-emerald-700/50 text-xs text-emerald-200" id="autoSaveBadge" aria-live="polite">
-            <span id="autoSaveDot" class="w-2 h-2 rounded-full bg-emerald-400 transition-transform duration-300"></span>
-            <span id="autoSaveText">Auto-save active</span>
+
+          <!-- Mode & Auto-Save Status Pill -->
+          <div class="mt-3 flex flex-wrap items-center gap-2">
+            <div id="modeStatusPill" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-950/75 border border-slate-700/80 text-xs font-medium text-slate-200" aria-live="polite">
+              <span id="modeStatusDot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span id="modeStatusText">🔒 Read-Only View — Only Abdelhak can update scores</span>
+            </div>
           </div>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Header Action Buttons -->
         <div class="flex flex-wrap items-center gap-2">
-          <button id="shareBtn" type="button" class="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-semibold text-sm shadow-md shadow-amber-500/20 transition-all cursor-pointer">
+          <!-- Always visible to everyone -->
+          <button id="shareWhatsAppBtn" type="button" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-semibold text-sm shadow-md shadow-amber-500/20 transition-all cursor-pointer">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
             Copy Standings
           </button>
-          <button id="exportBackupBtn" type="button" class="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-emerald-900/80 hover:bg-emerald-800 text-emerald-100 border border-emerald-700/70 font-medium text-sm transition-all cursor-pointer active:scale-95" title="Download a JSON backup file">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-            Export Backup
+
+          <button id="copyPublicLinkBtn" type="button" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-emerald-900/85 hover:bg-emerald-800 text-emerald-100 border border-emerald-700/70 font-medium text-sm transition-all cursor-pointer active:scale-95" title="Copy clean read-only link for friends">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+            Copy Share Link
           </button>
-          <button id="importBackupBtn" type="button" class="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-emerald-900/80 hover:bg-emerald-800 text-emerald-100 border border-emerald-700/70 font-medium text-sm transition-all cursor-pointer active:scale-95" title="Restore from a JSON backup file">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-            Import Backup
+
+          <!-- Viewer Mode: Admin Login Trigger -->
+          <button id="adminLoginBtn" type="button" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-amber-300 border border-amber-500/40 font-semibold text-sm transition-all cursor-pointer active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            Admin Login
           </button>
-          <input type="file" id="importFileInput" accept=".json,application/json" class="hidden" />
-          <button id="resetModalBtn" type="button" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-emerald-900/80 hover:bg-rose-950/80 text-emerald-100 hover:text-rose-200 border border-emerald-700/70 hover:border-rose-700/70 font-medium text-sm transition-all cursor-pointer active:scale-95">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-            Reset Week
+
+          <!-- Admin Mode: Lock / Exit Admin -->
+          <button id="adminLogoutBtn" type="button" class="hidden inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700 font-medium text-sm transition-all cursor-pointer active:scale-95">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+            Lock View
           </button>
         </div>
       </div>
@@ -86,7 +102,55 @@
   </header>
 
   <!-- Main Content Container -->
-  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 space-y-8">
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+    <!-- ADMIN CONTROL BAR (Only visible when unlocked with PIN) -->
+    <section id="adminControlPanel" aria-labelledby="admin-panel-heading" class="hidden bg-gradient-to-r from-emerald-950 to-slate-900 text-white rounded-2xl shadow-md border border-emerald-700/70 p-5 space-y-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-emerald-800/60 pb-3.5">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded-md bg-amber-400 text-slate-950 font-extrabold text-[11px] uppercase tracking-wider">Admin Mode</span>
+            <h2 id="admin-panel-heading" class="text-base font-bold text-white">Abdelhak's Control Center</h2>
+          </div>
+          <p class="text-xs text-emerald-200/80 mt-1">
+            Changes auto-save locally. When ready for your friends to see updates on GitHub Pages, click <strong>Publish / Export for GitHub</strong>.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 shrink-0">
+          <button id="openPublishModalBtn" type="button" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-emerald-500/20 transition-all cursor-pointer active:scale-95">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+            Publish / Export for GitHub
+          </button>
+          <button id="resetModalBtn" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-rose-950/80 hover:bg-rose-900 text-rose-200 border border-rose-700/70 font-semibold text-xs sm:text-sm transition-all cursor-pointer active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Reset Week
+          </button>
+        </div>
+      </div>
+
+      <!-- Add Participant & Manage Roster -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <form id="addParticipantForm" class="flex items-center gap-2 flex-1 max-w-md">
+          <input
+            type="text"
+            id="newParticipantInput"
+            maxlength="24"
+            placeholder="Add friend's name (e.g. Hamza)..."
+            class="flex-1 px-3.5 py-2 rounded-xl bg-slate-900/90 border border-emerald-700/80 text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+          />
+          <button type="submit" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm transition-colors cursor-pointer shrink-0">
+            + Add
+          </button>
+        </form>
+
+        <div class="flex items-center gap-2 text-xs text-emerald-200">
+          <button id="syncFromPublishedBtn" type="button" class="px-3 py-2 rounded-xl bg-emerald-900/80 hover:bg-emerald-800 border border-emerald-700/70 text-emerald-100 font-medium transition-colors cursor-pointer" title="Discard local draft and reload data currently published in this file">
+            Reload Published Data
+          </button>
+        </div>
+      </div>
+    </section>
 
     <!-- Live Leaderboard Section -->
     <section aria-labelledby="leaderboard-heading" class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
@@ -108,12 +172,12 @@
       </div>
     </section>
 
-    <!-- Daily Tracker Section -->
+    <!-- Daily & Weekly Breakdown Section -->
     <section aria-labelledby="tracker-heading" class="space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 id="tracker-heading" class="text-lg font-bold text-slate-900">Daily Prayer Checklist</h2>
-          <p class="text-xs text-slate-500">Select a day below to mark on-time prayers for each competitor.</p>
+          <h2 id="tracker-heading" class="text-lg font-bold text-slate-900">Daily Prayer Log</h2>
+          <p id="trackerSubtitle" class="text-xs text-slate-500">Select a day below to inspect each competitor's 5 daily prayers.</p>
         </div>
 
         <!-- View Switcher (Day View vs Full Week Matrix) -->
@@ -141,7 +205,7 @@
               0 / 30 completed
             </span>
           </div>
-          <span class="text-xs text-amber-300 font-medium">Tap a prayer pill to toggle</span>
+          <span id="dayActionHint" class="text-xs text-amber-300 font-medium">Read-only spectator view</span>
         </div>
 
         <!-- Participant Rows for Selected Day -->
@@ -150,7 +214,7 @@
         </div>
       </div>
 
-      <!-- Full Week Matrix Overview Panel (Hidden by default, toggleable) -->
+      <!-- Full Week Matrix Overview Panel -->
       <div id="fullWeekPanel" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
         <div class="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
           <h3 class="font-bold text-base">7-Day Breakdown (Sunday – Saturday)</h3>
@@ -183,19 +247,126 @@
 
   <!-- Footer -->
   <footer class="max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 text-center text-xs text-slate-500 space-y-1">
-    <p>Progress is automatically saved locally on this device across browser sessions. May Allah accept everyone's prayers on time.</p>
-    <p class="font-semibold text-slate-600 tracking-wide">created by ABDELHAK FIQHI</p>
+    <p>Official Weekly Prayer Challenge Board. May Allah accept everyone's prayers on time.</p>
+    <p class="font-semibold text-slate-700 tracking-wide">created by ABDELHAK FIQHI</p>
   </footer>
 
-  <!-- Custom Reset Confirmation Modal (No browser confirm() used) -->
-  <div id="resetModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 transform transition-all">
+  <!-- ADMIN PIN LOGIN MODAL -->
+  <div id="pinModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/65 backdrop-blur-xs p-4">
+    <form id="pinForm" class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200">
+      <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mb-4">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      </div>
+      <h3 class="text-lg font-bold text-slate-900">Admin Unlock (Abdelhak)</h3>
+      <p class="text-xs text-slate-600 mt-1">
+        Enter your Admin PIN to unlock prayer editing, participant management, and GitHub publishing.
+      </p>
+      <div class="mt-4">
+        <label for="adminPinInput" class="block text-xs font-semibold text-slate-700 mb-1.5">Admin PIN</label>
+        <input
+          type="password"
+          id="adminPinInput"
+          inputmode="numeric"
+          autocomplete="off"
+          placeholder="••••"
+          class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-slate-900 font-bold tracking-widest text-center text-lg focus:outline-none focus:ring-2 focus:ring-emerald-600"
+        />
+        <p id="pinErrorMsg" class="hidden text-xs text-rose-600 font-medium mt-1.5">Incorrect PIN. Please try again.</p>
+      </div>
+      <div class="mt-6 flex items-center justify-end gap-2.5">
+        <button id="cancelPinBtn" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer">
+          Cancel
+        </button>
+        <button type="submit" class="px-5 py-2 rounded-xl text-sm font-semibold bg-emerald-700 hover:bg-emerald-800 text-white shadow-sm transition-colors cursor-pointer">
+          Unlock Admin
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- PUBLISH TO GITHUB MODAL -->
+  <div id="publishModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/65 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex items-start justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-slate-900">Publish Updates to GitHub Pages</h3>
+            <p class="text-xs text-slate-500">Bake your current scores & participants directly into <code class="bg-slate-100 px-1 rounded">index.html</code></p>
+          </div>
+        </div>
+        <button id="closePublishModalBtn" type="button" class="text-slate-400 hover:text-slate-700 p-1 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80 text-xs text-slate-700 space-y-2">
+        <p class="font-bold text-slate-900">How to update your live GitHub Pages site in 20 seconds:</p>
+        <ol class="list-decimal list-inside space-y-1.5 text-slate-600">
+          <li>Click <strong>Copy Updated index.html</strong> (or <strong>Download index.html</strong>) below.</li>
+          <li>Open your GitHub repository and edit <code class="font-semibold text-slate-800">index.html</code> (or upload the downloaded file).</li>
+          <li>Paste/replace the code and click <strong>Commit changes</strong>. Within ~30 seconds, all your friends will see the updated scores in Read-Only mode!</li>
+        </ol>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+        <button id="copyUpdatedHtmlBtn" type="button" class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm shadow-sm transition-all cursor-pointer active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          Copy Updated index.html
+        </button>
+        <button id="downloadUpdatedHtmlBtn" type="button" class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-sm transition-all cursor-pointer active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Download index.html
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RENAME PARTICIPANT MODAL -->
+  <div id="renameModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/65 backdrop-blur-xs p-4">
+    <form id="renameForm" class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200">
+      <h3 class="text-lg font-bold text-slate-900">Rename Participant</h3>
+      <p class="text-xs text-slate-500 mt-1">All existing prayer records for this participant will be preserved.</p>
+      <div class="mt-4">
+        <input
+          type="text"
+          id="renameInput"
+          maxlength="24"
+          class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-900 font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600"
+        />
+      </div>
+      <div class="mt-5 flex items-center justify-end gap-2">
+        <button id="cancelRenameBtn" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">Cancel</button>
+        <button type="submit" class="px-4 py-2 rounded-xl text-sm font-semibold bg-emerald-700 hover:bg-emerald-800 text-white cursor-pointer">Save Name</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- REMOVE PARTICIPANT MODAL -->
+  <div id="removePersonModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/65 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200">
+      <h3 class="text-lg font-bold text-slate-900">Remove <span id="removePersonName" class="text-rose-600"></span>?</h3>
+      <p class="text-sm text-slate-600 mt-1.5">
+        This will remove them and their prayer scores from this week's challenge.
+      </p>
+      <div class="mt-6 flex items-center justify-end gap-2.5">
+        <button id="cancelRemovePersonBtn" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">Cancel</button>
+        <button id="confirmRemovePersonBtn" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold bg-rose-600 hover:bg-rose-700 text-white cursor-pointer">Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESET WEEK MODAL -->
+  <div id="resetModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/65 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200">
       <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mb-4">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
       </div>
       <h3 class="text-lg font-bold text-slate-900">Reset Entire Week?</h3>
       <p class="text-sm text-slate-600 mt-1.5">
-        This will clear all checked prayers from Sunday to Saturday for Youssef, Abdelhak, Bolkert, Naim, Yahya, and Anas. This action cannot be undone.
+        This will clear all checked prayers from Sunday to Saturday for all participants. Remember to publish to GitHub afterwards if you want friends to see the reset week.
       </p>
       <div class="mt-6 flex items-center justify-end gap-2.5">
         <button id="cancelResetBtn" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer">
@@ -209,28 +380,94 @@
   </div>
 
   <!-- Toast Notification -->
-  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-2.5 text-sm font-medium">
-    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-    <span id="toastMessage">Copied to clipboard!</span>
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-2.5 text-sm font-medium max-w-sm">
+    <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+    <span id="toastMessage">Notification</span>
   </div>
 
   <script>
     /**
-     * Weekly Prayer Challenge Tracker
-     * Starts on Sunday -> Saturday (7 days), 5 daily prayers each = 35 total prayers.
+     * =========================================================================
+     * 1. ADMIN PIN & PUBLISHED CHALLENGE DATA (GITHUB PAGES SYNC ENGINE)
+     * =========================================================================
+     * - Friends visiting your GitHub Pages URL automatically see the data stored
+     *   inside INITIAL_CHALLENGE_DATA below in strict Read-Only Mode.
+     * - Only you (Abdelhak) can unlock Admin Mode using ADMIN_PIN (default: 2008)
+     *   or by opening the link with ?admin=1.
      */
-    (function () {
-      // Exact required participant names
-      const PARTICIPANTS = [
-        'Youssef',
-        'Abdelhak',
-        'Bolkert',
-        'Naim',
-        'Yahya',
-        'Anas'
-      ];
+    const ADMIN_PIN = "2008";
 
-      // Week starting on Sunday
+    /* INITIAL_CHALLENGE_DATA_START */
+    const INITIAL_CHALLENGE_DATA = {
+      "lastUpdated": "Initial Week Setup",
+      "participants": [
+        "Youssef",
+        "Abdelhak",
+        "Bolkert",
+        "Naim",
+        "Yahya",
+        "Anas"
+      ],
+      "records": {
+        "Youssef": {
+          "Sunday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Monday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Tuesday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Wednesday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Thursday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Friday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Saturday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false }
+        },
+        "Abdelhak": {
+          "Sunday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Monday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Tuesday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Wednesday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Thursday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Friday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Saturday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false }
+        },
+        "Bolkert": {
+          "Sunday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Monday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Tuesday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Wednesday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Thursday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Friday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Saturday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false }
+        },
+        "Naim": {
+          "Sunday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Monday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Tuesday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Wednesday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Thursday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Friday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Saturday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false }
+        },
+        "Yahya": {
+          "Sunday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Monday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Tuesday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Wednesday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Thursday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Friday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Saturday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false }
+        },
+        "Anas": {
+          "Sunday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Monday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Tuesday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Wednesday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Thursday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Friday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false },
+          "Saturday": { "Fajr": false, "Dhuhr": false, "Asr": false, "Maghrib": false, "Isha": false }
+        }
+      }
+    };
+    /* INITIAL_CHALLENGE_DATA_END */
+
+    (function () {
       const DAYS = [
         { key: 'Sunday', short: 'Sun' },
         { key: 'Monday', short: 'Mon' },
@@ -241,239 +478,259 @@
         { key: 'Saturday', short: 'Sat' }
       ];
 
-      // 5 Daily Prayers
       const PRAYERS = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
       const MAX_WEEKLY_PRAYERS = DAYS.length * PRAYERS.length; // 35
-      const STORAGE_KEY = 'prayer_challenge_tracker_v2_data';
-      const LEGACY_STORAGE_KEY = 'prayer_challenge_tracker_v1';
-      const IDB_NAME = 'PrayerChallengeTrackerDB';
-      const IDB_STORE = 'trackerState';
-      const IDB_RECORD_KEY = 'currentWeekState';
 
-      // Application State
+      // Storage keys (Admin draft & session persistence)
+      const STORAGE_KEY = 'prayer_challenge_github_admin_draft_v1';
+      const ADMIN_SESSION_KEY = 'prayer_challenge_admin_unlocked_v1';
+      const IDB_NAME = 'PrayerChallengeGitHubAdminDB';
+      const IDB_STORE = 'adminDrafts';
+      const IDB_RECORD_KEY = 'currentDraft';
+
+      // Runtime State
       let state = {
-        selectedDayIndex: new Date().getDay(), // 0 = Sunday, 6 = Saturday
-        viewMode: 'day', // 'day' or 'week'
+        isAdmin: false,
+        selectedDayIndex: new Date().getDay(), // 0 = Sunday
+        viewMode: 'day', // 'day' | 'week'
         lastSavedAt: null,
-        records: {} // { [participant]: { [dayKey]: { [prayer]: boolean } } }
+        lastUpdatedLabel: INITIAL_CHALLENGE_DATA.lastUpdated || 'Initial Week Setup',
+        participants: [],
+        records: {}
       };
 
-      // Initialize clean default structure
-      function createEmptyRecords() {
-        const records = {};
-        PARTICIPANTS.forEach(person => {
-          records[person] = {};
+      let personBeingRenamed = null;
+      let personBeingRemoved = null;
+
+      // Helper: create blank 7x5 prayer object for a participant
+      function createBlankWeekForPerson() {
+        const week = {};
+        DAYS.forEach(day => {
+          week[day.key] = {};
+          PRAYERS.forEach(prayer => {
+            week[day.key][prayer] = false;
+          });
+        });
+        return week;
+      }
+
+      // Helper: sanitize any challenge data object
+      function sanitizeChallengeData(source) {
+        const rawNames = Array.isArray(source?.participants) && source.participants.length > 0
+          ? source.participants
+          : INITIAL_CHALLENGE_DATA.participants;
+
+        const cleanParticipants = [];
+        rawNames.forEach(name => {
+          const trimmed = String(name || '').trim();
+          if (trimmed && !cleanParticipants.includes(trimmed)) {
+            cleanParticipants.push(trimmed);
+          }
+        });
+
+        const cleanRecords = {};
+        cleanParticipants.forEach(person => {
+          cleanRecords[person] = createBlankWeekForPerson();
           DAYS.forEach(day => {
-            records[person][day.key] = {};
             PRAYERS.forEach(prayer => {
-              records[person][day.key][prayer] = false;
+              if (
+                source?.records &&
+                source.records[person] &&
+                source.records[person][day.key] &&
+                typeof source.records[person][day.key][prayer] === 'boolean'
+              ) {
+                cleanRecords[person][day.key][prayer] = source.records[person][day.key][prayer];
+              }
             });
           });
         });
-        return records;
-      }
-
-      // Normalize and sanitize any loaded payload into valid state
-      function sanitizePayload(parsed) {
-        const cleanRecords = createEmptyRecords();
-        let hasData = false;
-
-        if (parsed && parsed.records) {
-          PARTICIPANTS.forEach(person => {
-            DAYS.forEach(day => {
-              PRAYERS.forEach(prayer => {
-                if (
-                  parsed.records[person] &&
-                  parsed.records[person][day.key] &&
-                  typeof parsed.records[person][day.key][prayer] === 'boolean'
-                ) {
-                  cleanRecords[person][day.key][prayer] = parsed.records[person][day.key][prayer];
-                  hasData = true;
-                }
-              });
-            });
-          });
-        }
-
-        const validDayIndex =
-          typeof parsed?.selectedDayIndex === 'number' &&
-          parsed.selectedDayIndex >= 0 &&
-          parsed.selectedDayIndex < DAYS.length
-            ? parsed.selectedDayIndex
-            : new Date().getDay();
-
-        const validViewMode =
-          parsed?.viewMode === 'week' || parsed?.viewMode === 'day'
-            ? parsed.viewMode
-            : 'day';
-
-        const validTimestamp =
-          typeof parsed?.lastSavedAt === 'number' ? parsed.lastSavedAt : 0;
 
         return {
-          hasData,
-          selectedDayIndex: validDayIndex,
-          viewMode: validViewMode,
-          lastSavedAt: validTimestamp,
-          records: cleanRecords
+          participants: cleanParticipants,
+          records: cleanRecords,
+          lastUpdated: typeof source?.lastUpdated === 'string' ? source.lastUpdated : INITIAL_CHALLENGE_DATA.lastUpdated
         };
       }
 
-      // IndexedDB helper: open database
+      // IndexedDB Helpers for Abdelhak's local draft backup
       function openIDB() {
         return new Promise((resolve, reject) => {
-          if (!('indexedDB' in window)) {
-            reject(new Error('IndexedDB not supported'));
-            return;
-          }
-          const request = indexedDB.open(IDB_NAME, 1);
-          request.onupgradeneeded = (event) => {
-            const db = event.target.result;
+          if (!('indexedDB' in window)) return reject(new Error('No IDB'));
+          const req = indexedDB.open(IDB_NAME, 1);
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
             if (!db.objectStoreNames.contains(IDB_STORE)) {
               db.createObjectStore(IDB_STORE);
             }
           };
-          request.onsuccess = () => resolve(request.result);
-          request.onerror = () => reject(request.error);
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
         });
       }
 
-      // Read state from IndexedDB
-      async function readFromIDB() {
+      async function readIDBDraft() {
         try {
           const db = await openIDB();
           return await new Promise((resolve) => {
             const tx = db.transaction(IDB_STORE, 'readonly');
-            const store = tx.objectStore(IDB_STORE);
-            const req = store.get(IDB_RECORD_KEY);
+            const req = tx.objectStore(IDB_STORE).get(IDB_RECORD_KEY);
             req.onsuccess = () => resolve(req.result || null);
             req.onerror = () => resolve(null);
           });
-        } catch (err) {
+        } catch (e) {
           return null;
         }
       }
 
-      // Write state to IndexedDB
-      async function writeToIDB(payload) {
+      async function writeIDBDraft(payload) {
         try {
           const db = await openIDB();
           await new Promise((resolve, reject) => {
             const tx = db.transaction(IDB_STORE, 'readwrite');
-            const store = tx.objectStore(IDB_STORE);
-            const req = store.put(payload, IDB_RECORD_KEY);
+            const req = tx.objectStore(IDB_STORE).put(payload, IDB_RECORD_KEY);
             req.onsuccess = () => resolve();
             req.onerror = () => reject(req.error);
           });
-        } catch (err) {
-          // Fallback silently to localStorage if IDB is restricted
+        } catch (e) {
+          // Ignore if restricted
         }
       }
 
-      // Format timestamp for the header badge
-      function formatTime(ts) {
-        const d = ts ? new Date(ts) : new Date();
-        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      }
-
-      // Update live auto-save indicator in header
-      function updateAutoSaveIndicator(timestamp, pulse = false) {
-        const textEl = document.getElementById('autoSaveText');
-        const dotEl = document.getElementById('autoSaveDot');
-        if (!textEl || !dotEl) return;
-
-        if (timestamp) {
-          textEl.textContent = `✓ Auto-saved at ${formatTime(timestamp)}`;
-        } else {
-          textEl.textContent = '✓ Auto-save ready';
-        }
-
-        if (pulse) {
-          dotEl.classList.add('scale-150', 'bg-amber-300');
-          setTimeout(() => {
-            dotEl.classList.remove('scale-150', 'bg-amber-300');
-          }, 350);
-        }
-      }
-
-      // Load state from both localStorage and IndexedDB, recovering the freshest valid copy
-      async function loadState() {
-        let lsCandidate = null;
-        let idbCandidate = null;
-
-        // 1. Check primary localStorage (and migrate v1 if v2 is empty)
-        try {
-          const rawV2 = localStorage.getItem(STORAGE_KEY);
-          if (rawV2) {
-            lsCandidate = sanitizePayload(JSON.parse(rawV2));
-          } else {
-            const rawV1 = localStorage.getItem(LEGACY_STORAGE_KEY);
-            if (rawV1) {
-              lsCandidate = sanitizePayload(JSON.parse(rawV1));
-            }
-          }
-        } catch (err) {
-          console.error('Failed to read from localStorage:', err);
-        }
-
-        // 2. Check IndexedDB redundant backup
-        try {
-          const rawIDB = await readFromIDB();
-          if (rawIDB) {
-            idbCandidate = sanitizePayload(rawIDB);
-          }
-        } catch (err) {
-          console.error('Failed to read from IndexedDB:', err);
-        }
-
-        // 3. Pick whichever storage layer exists and has the newest timestamp
-        let chosen = null;
-        if (lsCandidate?.hasData && idbCandidate?.hasData) {
-          chosen = idbCandidate.lastSavedAt > lsCandidate.lastSavedAt ? idbCandidate : lsCandidate;
-        } else if (lsCandidate?.hasData) {
-          chosen = lsCandidate;
-        } else if (idbCandidate?.hasData) {
-          chosen = idbCandidate;
-        }
-
-        if (chosen) {
-          state.records = chosen.records;
-          state.selectedDayIndex = chosen.selectedDayIndex;
-          state.viewMode = chosen.viewMode;
-          state.lastSavedAt = chosen.lastSavedAt || Date.now();
-          // Re-sync both layers immediately so both are up-to-date
-          saveState(false);
-          updateAutoSaveIndicator(state.lastSavedAt, false);
-        } else {
-          state.records = createEmptyRecords();
-          state.selectedDayIndex = new Date().getDay();
-          state.viewMode = 'day';
-          state.lastSavedAt = null;
-          updateAutoSaveIndicator(null, false);
-        }
-      }
-
-      // Dual-layer persistent save (localStorage + IndexedDB)
-      function saveState(pulse = true) {
+      // Save Admin Draft locally (only runs when Admin makes edits)
+      function saveAdminDraft(pulse = true) {
+        if (!state.isAdmin) return;
         const now = Date.now();
         state.lastSavedAt = now;
 
         const payload = {
-          version: 2,
-          selectedDayIndex: state.selectedDayIndex,
-          viewMode: state.viewMode,
           lastSavedAt: now,
+          participants: state.participants,
           records: state.records
         };
 
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-        } catch (err) {
-          console.error('Failed to save to localStorage:', err);
+        } catch (e) {
+          console.error('LocalStorage save failed:', e);
         }
+        writeIDBDraft(payload);
+        updateHeaderModeUI(pulse);
+      }
 
-        writeToIDB(payload);
-        updateAutoSaveIndicator(now, pulse);
+      // Load active data depending on whether user is Viewer or Admin
+      async function initializeData() {
+        // Check if Admin was already unlocked on this device
+        const wasAdminUnlocked = localStorage.getItem(ADMIN_SESSION_KEY) === 'true';
+        state.isAdmin = wasAdminUnlocked;
+
+        // Always start with the published INITIAL_CHALLENGE_DATA
+        const published = sanitizeChallengeData(INITIAL_CHALLENGE_DATA);
+        state.participants = published.participants;
+        state.records = published.records;
+        state.lastUpdatedLabel = published.lastUpdated;
+
+        // If Admin is unlocked on this device, load Abdelhak's saved local draft if available
+        if (state.isAdmin) {
+          let lsDraft = null;
+          let idbDraft = null;
+
+          try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) lsDraft = JSON.parse(raw);
+          } catch (e) {}
+
+          idbDraft = await readIDBDraft();
+
+          let chosenDraft = null;
+          if (lsDraft && idbDraft) {
+            chosenDraft = (idbDraft.lastSavedAt || 0) > (lsDraft.lastSavedAt || 0) ? idbDraft : lsDraft;
+          } else {
+            chosenDraft = lsDraft || idbDraft;
+          }
+
+          if (chosenDraft && Array.isArray(chosenDraft.participants) && chosenDraft.records) {
+            const sanitizedDraft = sanitizeChallengeData(chosenDraft);
+            state.participants = sanitizedDraft.participants;
+            state.records = sanitizedDraft.records;
+            state.lastSavedAt = chosenDraft.lastSavedAt || Date.now();
+          }
+        }
+      }
+
+      // Update Header UI for Read-Only Mode vs Admin Mode
+      function updateHeaderModeUI(pulse = false) {
+        const pill = document.getElementById('modeStatusPill');
+        const dot = document.getElementById('modeStatusDot');
+        const text = document.getElementById('modeStatusText');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+        const adminControlPanel = document.getElementById('adminControlPanel');
+        const dayActionHint = document.getElementById('dayActionHint');
+        const trackerSubtitle = document.getElementById('trackerSubtitle');
+        const publishedBadge = document.getElementById('lastPublishedBadge');
+
+        publishedBadge.textContent = `Published: ${state.lastUpdatedLabel}`;
+
+        if (state.isAdmin) {
+          pill.className = 'inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-950/90 border border-emerald-500/60 text-xs font-semibold text-emerald-200';
+          dot.className = 'w-2 h-2 rounded-full bg-emerald-400 transition-transform duration-300';
+          const savedTimeStr = state.lastSavedAt
+            ? ` • Auto-saved ${new Date(state.lastSavedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`
+            : ' • Auto-save active';
+          text.textContent = `🔓 Admin Mode (Abdelhak)${savedTimeStr}`;
+
+          adminLoginBtn.classList.add('hidden');
+          adminLogoutBtn.classList.remove('hidden');
+          adminControlPanel.classList.remove('hidden');
+
+          dayActionHint.textContent = 'Tap any prayer pill to toggle on-time status';
+          dayActionHint.className = 'text-xs text-amber-300 font-medium';
+          trackerSubtitle.textContent = 'Select a day below to mark on-time prayers for each competitor.';
+
+          if (pulse) {
+            dot.classList.add('scale-150', 'bg-amber-300');
+            setTimeout(() => dot.classList.remove('scale-150', 'bg-amber-300'), 350);
+          }
+        } else {
+          pill.className = 'inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-950/75 border border-slate-700/80 text-xs font-medium text-slate-200';
+          dot.className = 'w-2 h-2 rounded-full bg-amber-400';
+          text.textContent = '🔒 Read-Only View — Only Abdelhak can update scores';
+
+          adminLoginBtn.classList.remove('hidden');
+          adminLogoutBtn.classList.add('hidden');
+          adminControlPanel.classList.add('hidden');
+
+          dayActionHint.textContent = '🔒 Read-only spectator mode';
+          dayActionHint.className = 'text-xs text-slate-300 font-medium';
+          trackerSubtitle.textContent = 'Select a day below to view each competitor’s 5 daily prayers.';
+        }
+      }
+
+      // Unlock Admin Mode
+      function unlockAdmin() {
+        state.isAdmin = true;
+        localStorage.setItem(ADMIN_SESSION_KEY, 'true');
+        initializeData().then(() => {
+          updateHeaderModeUI(true);
+          renderAll();
+          showToast('Welcome back, Abdelhak! Admin editing unlocked.');
+        });
+      }
+
+      // Lock Admin Mode (return to strict Read-Only View)
+      function lockAdmin() {
+        state.isAdmin = false;
+        localStorage.removeItem(ADMIN_SESSION_KEY);
+        // Strip ?admin=1 from URL if present without reloading page
+        if (window.location.search.includes('admin=')) {
+          const cleanUrl = window.location.origin + window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+        }
+        initializeData().then(() => {
+          updateHeaderModeUI(false);
+          renderAll();
+          showToast('Switched to Read-Only Viewer Mode.');
+        });
       }
 
       // Calculate score for a single participant
@@ -483,7 +740,7 @@
         DAYS.forEach(day => {
           let daySum = 0;
           PRAYERS.forEach(prayer => {
-            if (state.records[person][day.key][prayer]) {
+            if (state.records[person]?.[day.key]?.[prayer]) {
               daySum++;
               total++;
             }
@@ -494,25 +751,83 @@
         return { person, total, percentage, dailyCounts };
       }
 
-      // Toggle a prayer status
+      // Toggle a single prayer (Strictly guarded by state.isAdmin)
       function togglePrayer(person, dayKey, prayer) {
+        if (!state.isAdmin) return;
         state.records[person][dayKey][prayer] = !state.records[person][dayKey][prayer];
-        saveState();
+        saveAdminDraft(true);
         renderAll();
       }
 
-      // Toggle all 5 prayers for a person on a specific day
+      // Toggle all 5 prayers for a person on a specific day (Strictly guarded by state.isAdmin)
       function toggleAllForDay(person, dayKey) {
+        if (!state.isAdmin) return;
         const allChecked = PRAYERS.every(p => state.records[person][dayKey][p]);
         const targetValue = !allChecked;
         PRAYERS.forEach(p => {
           state.records[person][dayKey][p] = targetValue;
         });
-        saveState();
+        saveAdminDraft(true);
         renderAll();
       }
 
-      // Show subtle toast message
+      // Add a new participant (Admin only)
+      function addParticipant(rawName) {
+        if (!state.isAdmin) return;
+        const cleanName = rawName.trim();
+        if (!cleanName) return;
+
+        const exists = state.participants.some(p => p.toLowerCase() === cleanName.toLowerCase());
+        if (exists) {
+          showToast(`"${cleanName}" is already in the challenge!`);
+          return;
+        }
+
+        state.participants.push(cleanName);
+        state.records[cleanName] = createBlankWeekForPerson();
+        saveAdminDraft(true);
+        renderAll();
+        showToast(`Added ${cleanName} to the challenge!`);
+      }
+
+      // Rename a participant (Admin only)
+      function renameParticipant(oldName, rawNewName) {
+        if (!state.isAdmin || !oldName) return;
+        const newName = rawNewName.trim();
+        if (!newName || newName === oldName) return;
+
+        const exists = state.participants.some(p => p.toLowerCase() === newName.toLowerCase() && p !== oldName);
+        if (exists) {
+          showToast(`"${newName}" already exists!`);
+          return;
+        }
+
+        const idx = state.participants.indexOf(oldName);
+        if (idx !== -1) {
+          state.participants[idx] = newName;
+          state.records[newName] = state.records[oldName];
+          delete state.records[oldName];
+          saveAdminDraft(true);
+          renderAll();
+          showToast(`Renamed ${oldName} to ${newName}.`);
+        }
+      }
+
+      // Remove a participant (Admin only)
+      function removeParticipant(person) {
+        if (!state.isAdmin) return;
+        if (state.participants.length <= 1) {
+          showToast('At least 1 participant must remain.');
+          return;
+        }
+        state.participants = state.participants.filter(p => p !== person);
+        delete state.records[person];
+        saveAdminDraft(true);
+        renderAll();
+        showToast(`Removed ${person} from the challenge.`);
+      }
+
+      // Toast Notification Helper
       let toastTimeout;
       function showToast(message) {
         const toast = document.getElementById('toastNotification');
@@ -522,7 +837,7 @@
         clearTimeout(toastTimeout);
         toastTimeout = setTimeout(() => {
           toast.classList.add('translate-y-20', 'opacity-0');
-        }, 2800);
+        }, 3000);
       }
 
       // Render Live Leaderboard
@@ -530,15 +845,15 @@
         const grid = document.getElementById('leaderboardGrid');
         const groupBadge = document.getElementById('groupSummaryBadge');
 
-        const ranked = PARTICIPANTS
+        const ranked = state.participants
           .map(p => getParticipantStats(p))
           .sort((a, b) => b.total - a.total || a.person.localeCompare(b.person));
 
         const totalGroupPrayers = ranked.reduce((acc, item) => acc + item.total, 0);
-        const maxGroupPrayers = PARTICIPANTS.length * MAX_WEEKLY_PRAYERS;
+        const maxGroupPrayers = state.participants.length * MAX_WEEKLY_PRAYERS;
         groupBadge.textContent = `${totalGroupPrayers} / ${maxGroupPrayers} Group Prayers`;
 
-        // Dense ranking calculation (handles ties gracefully)
+        // Dense ranking calculation
         let currentRank = 1;
         ranked.forEach((item, index) => {
           if (index > 0 && item.total < ranked[index - 1].total) {
@@ -574,7 +889,7 @@
                   ${badgeHtml}
                   <div class="truncate">
                     <div class="flex items-center gap-1.5">
-                      <span class="font-bold text-slate-900 truncate">${item.person}</span>
+                      <span class="font-bold text-slate-900 truncate">${escapeHtml(item.person)}</span>
                       ${perfectBadge}
                     </div>
                     <span class="text-xs text-slate-500">${item.percentage}% on-time rate</span>
@@ -586,7 +901,6 @@
                 </div>
               </div>
 
-              <!-- Progress Bar -->
               <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/60">
                 <div class="h-full rounded-full transition-all duration-500 ${isPerfect ? 'bg-amber-500' : 'bg-emerald-600'}" style="width: ${item.percentage}%"></div>
               </div>
@@ -599,20 +913,19 @@
       function renderDayTabs() {
         const container = document.getElementById('dayTabsContainer');
         const todayIndex = new Date().getDay();
+        const maxForDay = state.participants.length * PRAYERS.length;
 
         container.innerHTML = DAYS.map((day, idx) => {
           const isSelected = idx === state.selectedDayIndex;
           const isToday = idx === todayIndex;
 
-          // Count total completed prayers across all 6 participants for this day
           let dayCompleted = 0;
-          PARTICIPANTS.forEach(p => {
+          state.participants.forEach(p => {
             PRAYERS.forEach(pr => {
-              if (state.records[p][day.key][pr]) dayCompleted++;
+              if (state.records[p]?.[day.key]?.[pr]) dayCompleted++;
             });
           });
-          const maxForDay = PARTICIPANTS.length * PRAYERS.length; // 30
-          const isDayFull = dayCompleted === maxForDay;
+          const isDayFull = maxForDay > 0 && dayCompleted === maxForDay;
 
           const baseClass = isSelected
             ? 'bg-emerald-700 text-white shadow-md shadow-emerald-700/20 ring-2 ring-emerald-700 ring-offset-1'
@@ -633,13 +946,11 @@
           `;
         }).join('');
 
-        // Attach click events
         container.querySelectorAll('.day-tab-btn').forEach(btn => {
           btn.addEventListener('click', () => {
             state.selectedDayIndex = Number(btn.dataset.dayIndex);
-            saveState(true);
             if (state.viewMode !== 'day') {
-              setViewMode('day', false);
+              setViewMode('day');
             } else {
               renderDayTabs();
               renderDayFocus();
@@ -648,7 +959,7 @@
         });
       }
 
-      // Render Checklist for Active Day
+      // Render Checklist for Active Day (Interactive for Admin, Read-Only for Friends)
       function renderDayFocus() {
         const currentDay = DAYS[state.selectedDayIndex];
         const titleEl = document.getElementById('activeDayTitle');
@@ -658,65 +969,73 @@
         titleEl.textContent = currentDay.key;
 
         let totalDayChecks = 0;
-        PARTICIPANTS.forEach(p => {
+        state.participants.forEach(p => {
           PRAYERS.forEach(pr => {
-            if (state.records[p][currentDay.key][pr]) totalDayChecks++;
+            if (state.records[p]?.[currentDay.key]?.[pr]) totalDayChecks++;
           });
         });
-        statsEl.textContent = `${totalDayChecks} / ${PARTICIPANTS.length * 5} completed`;
+        statsEl.textContent = `${totalDayChecks} / ${state.participants.length * 5} completed`;
 
-        listEl.innerHTML = PARTICIPANTS.map(person => {
+        listEl.innerHTML = state.participants.map(person => {
           const dayRecord = state.records[person][currentDay.key];
           const personDayCount = PRAYERS.filter(p => dayRecord[p]).length;
           const allFiveDone = personDayCount === 5;
 
           const prayerButtonsHtml = PRAYERS.map(prayer => {
             const checked = dayRecord[prayer];
-            return `
-              <button
-                type="button"
-                data-person="${person}"
-                data-day="${currentDay.key}"
-                data-prayer="${prayer}"
-                aria-pressed="${checked}"
-                class="prayer-toggle-btn group flex items-center justify-center gap-1.5 px-3 py-2.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all duration-150 cursor-pointer active:scale-95 select-none ${
-                  checked
-                    ? 'bg-emerald-600 border-emerald-600 text-white shadow-xs shadow-emerald-600/20'
-                    : 'bg-slate-50 hover:bg-emerald-50/70 border-slate-200 text-slate-600 hover:border-emerald-300'
-                }"
-              >
-                <span class="w-4 h-4 rounded-md flex items-center justify-center transition-colors ${
-                  checked ? 'bg-white/20 text-white' : 'bg-white border border-slate-300 text-transparent group-hover:border-emerald-400'
-                }">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                </span>
-                <span>${prayer}</span>
-              </button>
-            `;
-          }).join('');
 
-          return `
-            <div class="p-4 sm:px-5 sm:py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 transition-colors ${allFiveDone ? 'bg-emerald-50/30' : 'hover:bg-slate-50/60'}">
-              <div class="flex items-center justify-between lg:justify-start gap-3 min-w-[165px]">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-9 h-9 rounded-full font-bold text-sm flex items-center justify-center shrink-0 ${
-                    allFiveDone ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-700 border border-slate-200'
-                  }">
-                    ${person.slice(0, 2).toUpperCase()}
-                  </div>
-                  <div>
-                    <div class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-1.5">
-                      ${person}
-                      ${allFiveDone ? '<span class="text-emerald-600 text-xs" title="All 5 prayers on time!">✓</span>' : ''}
-                    </div>
-                    <div class="text-xs text-slate-500">${personDayCount} / 5 today</div>
-                  </div>
-                </div>
-
-                <!-- Quick "All 5" Toggle Button -->
+            if (state.isAdmin) {
+              // Admin Interactive Button
+              return `
                 <button
                   type="button"
-                  data-person="${person}"
+                  data-person="${escapeAttr(person)}"
+                  data-day="${currentDay.key}"
+                  data-prayer="${prayer}"
+                  aria-pressed="${checked}"
+                  class="prayer-toggle-btn group flex items-center justify-center gap-1.5 px-3 py-2.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all duration-150 cursor-pointer active:scale-95 select-none ${
+                    checked
+                      ? 'bg-emerald-600 border-emerald-600 text-white shadow-xs shadow-emerald-600/20'
+                      : 'bg-slate-50 hover:bg-emerald-50/70 border-slate-200 text-slate-600 hover:border-emerald-300'
+                  }"
+                >
+                  <span class="w-4 h-4 rounded-md flex items-center justify-center transition-colors ${
+                    checked ? 'bg-white/20 text-white' : 'bg-white border border-slate-300 text-transparent group-hover:border-emerald-400'
+                  }">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  </span>
+                  <span>${prayer}</span>
+                </button>
+              `;
+            } else {
+              // Strict Read-Only Badge for Friends
+              return `
+                <div
+                  aria-label="${escapeAttr(person)} - ${prayer}: ${checked ? 'Prayed on time' : 'Not marked'}"
+                  class="flex items-center justify-center gap-1.5 px-3 py-2.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold border select-none cursor-default ${
+                    checked
+                      ? 'bg-emerald-600 border-emerald-600 text-white shadow-xs'
+                      : 'bg-slate-50/80 border-slate-200/80 text-slate-400'
+                  }"
+                >
+                  <span class="w-4 h-4 rounded-md flex items-center justify-center ${
+                    checked ? 'bg-white/20 text-white' : 'bg-white border border-slate-200 text-transparent'
+                  }">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  </span>
+                  <span>${prayer}</span>
+                </div>
+              `;
+            }
+          }).join('');
+
+          // Admin-only row controls (All 5, Rename, Remove)
+          const adminRowControlsHtml = state.isAdmin
+            ? `
+              <div class="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  data-person="${escapeAttr(person)}"
                   data-day="${currentDay.key}"
                   class="toggle-all-btn text-xs font-semibold px-2.5 py-1.5 rounded-lg border transition-colors cursor-pointer ${
                     allFiveDone
@@ -724,11 +1043,50 @@
                       : 'bg-white border-slate-200 text-slate-500 hover:text-emerald-700 hover:border-emerald-300'
                   }"
                 >
-                  ${allFiveDone ? 'Clear Day' : 'All 5'}
+                  ${allFiveDone ? 'Clear' : 'All 5'}
+                </button>
+                <button
+                  type="button"
+                  data-person="${escapeAttr(person)}"
+                  class="rename-person-btn p-1.5 rounded-lg text-slate-400 hover:text-emerald-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                  title="Rename ${escapeAttr(person)}"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                </button>
+                <button
+                  type="button"
+                  data-person="${escapeAttr(person)}"
+                  class="remove-person-btn p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                  title="Remove ${escapeAttr(person)}"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 </button>
               </div>
+            `
+            : '';
 
-              <!-- 5 Prayer Buttons Grid -->
+          return `
+            <div class="p-4 sm:px-5 sm:py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 transition-colors ${allFiveDone ? 'bg-emerald-50/30' : 'hover:bg-slate-50/60'}">
+              <div class="flex items-center justify-between lg:justify-start gap-3 min-w-[205px]">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <div class="w-9 h-9 rounded-full font-bold text-sm flex items-center justify-center shrink-0 ${
+                    allFiveDone ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-700 border border-slate-200'
+                  }">
+                    ${escapeHtml(person.slice(0, 2).toUpperCase())}
+                  </div>
+                  <div class="truncate">
+                    <div class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-1.5 truncate">
+                      <span class="truncate">${escapeHtml(person)}</span>
+                      ${allFiveDone ? '<span class="text-emerald-600 text-xs shrink-0" title="All 5 prayers on time!">✓</span>' : ''}
+                    </div>
+                    <div class="text-xs text-slate-500">${personDayCount} / 5 today</div>
+                  </div>
+                </div>
+
+                ${adminRowControlsHtml}
+              </div>
+
+              <!-- 5 Prayer Pills Grid -->
               <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 flex-1 max-w-2xl">
                 ${prayerButtonsHtml}
               </div>
@@ -736,25 +1094,49 @@
           `;
         }).join('');
 
-        // Attach listeners for individual prayer toggles
-        listEl.querySelectorAll('.prayer-toggle-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            togglePrayer(btn.dataset.person, btn.dataset.day, btn.dataset.prayer);
+        // Bind Admin-only buttons if in Admin Mode
+        if (state.isAdmin) {
+          listEl.querySelectorAll('.prayer-toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              togglePrayer(btn.dataset.person, btn.dataset.day, btn.dataset.prayer);
+            });
           });
-        });
 
-        // Attach listeners for "All 5" toggles
-        listEl.querySelectorAll('.toggle-all-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            toggleAllForDay(btn.dataset.person, btn.dataset.day);
+          listEl.querySelectorAll('.toggle-all-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              toggleAllForDay(btn.dataset.person, btn.dataset.day);
+            });
           });
-        });
+
+          listEl.querySelectorAll('.rename-person-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              personBeingRenamed = btn.dataset.person;
+              const input = document.getElementById('renameInput');
+              input.value = personBeingRenamed;
+              const modal = document.getElementById('renameModal');
+              modal.classList.remove('hidden');
+              modal.classList.add('flex');
+              input.focus();
+              input.select();
+            });
+          });
+
+          listEl.querySelectorAll('.remove-person-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              personBeingRemoved = btn.dataset.person;
+              document.getElementById('removePersonName').textContent = personBeingRemoved;
+              const modal = document.getElementById('removePersonModal');
+              modal.classList.remove('hidden');
+              modal.classList.add('flex');
+            });
+          });
+        }
       }
 
       // Render 7-Day Full Matrix Table
       function renderFullWeekMatrix() {
         const tbody = document.getElementById('weekMatrixBody');
-        tbody.innerHTML = PARTICIPANTS.map(person => {
+        tbody.innerHTML = state.participants.map(person => {
           const stats = getParticipantStats(person);
           const dayCells = DAYS.map((day, idx) => {
             const count = stats.dailyCounts[day.key];
@@ -771,7 +1153,7 @@
                       ? 'bg-emerald-100 text-emerald-800'
                       : 'bg-slate-100 text-slate-400'
                   }"
-                  title="Click to edit ${person} on ${day.key}"
+                  title="Click to inspect ${escapeAttr(person)} on ${day.key}"
                 >
                   ${count}/5
                 </button>
@@ -782,7 +1164,7 @@
           return `
             <tr class="hover:bg-slate-50/80 transition-colors">
               <td class="py-3.5 px-4 font-bold text-slate-900 sticky left-0 bg-white z-10 border-r border-slate-100">
-                ${person}
+                ${escapeHtml(person)}
               </td>
               ${dayCells}
               <td class="py-3.5 px-4 text-right font-extrabold text-emerald-700">
@@ -795,18 +1177,14 @@
         tbody.querySelectorAll('.jump-day-btn').forEach(btn => {
           btn.addEventListener('click', () => {
             state.selectedDayIndex = Number(btn.dataset.jumpDay);
-            saveState(true);
-            setViewMode('day', false);
+            setViewMode('day');
           });
         });
       }
 
       // Switch between Day Focus and Full Week Overview
-      function setViewMode(mode, shouldSave = true) {
+      function setViewMode(mode) {
         state.viewMode = mode;
-        if (shouldSave) {
-          saveState(true);
-        }
         const dayBtn = document.getElementById('viewDayBtn');
         const weekBtn = document.getElementById('viewWeekBtn');
         const dayPanel = document.getElementById('dayFocusPanel');
@@ -826,69 +1204,88 @@
         renderAll();
       }
 
-      // Export JSON Backup file
-      function exportBackupFile() {
-        const payload = {
-          app: 'Weekly Prayer Challenge Tracker',
-          version: 2,
-          exportedAt: new Date().toISOString(),
-          selectedDayIndex: state.selectedDayIndex,
-          viewMode: state.viewMode,
-          lastSavedAt: state.lastSavedAt || Date.now(),
+      // Generate Updated Single-File index.html with baked INITIAL_CHALLENGE_DATA
+      function generatePublishableHtml() {
+        const nowFormatted = new Date().toLocaleDateString('en-US', {
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        const payloadObject = {
+          lastUpdated: nowFormatted,
+          participants: state.participants,
           records: state.records
         };
-        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        const dateStamp = new Date().toISOString().slice(0, 10);
-        a.href = url;
-        a.download = `prayer-challenge-backup-${dateStamp}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showToast('Backup JSON downloaded!');
-      }
 
-      // Import JSON Backup file
-      function handleImportFile(event) {
-        const file = event.target.files && event.target.files[0];
-        if (!file) return;
+        const serializedData = JSON.stringify(payloadObject, null, 6)
+          .split('\n')
+          .map((line, idx) => (idx === 0 ? line : '    ' + line))
+          .join('\n');
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          try {
-            const parsed = JSON.parse(e.target.result);
-            const sanitized = sanitizePayload(parsed);
-            if (!sanitized.hasData) {
-              showToast('Invalid backup file format.');
-              return;
-            }
-            state.records = sanitized.records;
-            state.selectedDayIndex = sanitized.selectedDayIndex;
-            state.viewMode = sanitized.viewMode;
-            saveState(true);
-            setViewMode(state.viewMode, false);
-            showToast('Progress restored from backup!');
-          } catch (err) {
-            showToast('Could not read backup file.');
-          } finally {
-            event.target.value = '';
+        const replacementBlock = `/* INITIAL_CHALLENGE_DATA_START */\n    const INITIAL_CHALLENGE_DATA = ${serializedData};\n    /* INITIAL_CHALLENGE_DATA_END */`;
+
+        // Fetch current document source and replace INITIAL_CHALLENGE_DATA cleanly
+        const docClone = document.documentElement.cloneNode(true);
+
+        // Reset transient modal/toast visibility states inside the exported HTML
+        ['pinModal', 'publishModal', 'renameModal', 'removePersonModal', 'resetModal'].forEach(id => {
+          const el = docClone.querySelector(`#${id}`);
+          if (el) {
+            el.classList.add('hidden');
+            el.classList.remove('flex');
           }
-        };
-        reader.readAsText(file);
+        });
+        const adminPanelClone = docClone.querySelector('#adminControlPanel');
+        if (adminPanelClone) adminPanelClone.classList.add('hidden');
+
+        const adminLogoutClone = docClone.querySelector('#adminLogoutBtn');
+        if (adminLogoutClone) adminLogoutClone.classList.add('hidden');
+
+        const adminLoginClone = docClone.querySelector('#adminLoginBtn');
+        if (adminLoginClone) adminLoginClone.classList.remove('hidden');
+
+        let fullHtml = '<!DOCTYPE html>\n' + docClone.outerHTML;
+
+        const blockRegex = /\/\* INITIAL_CHALLENGE_DATA_START \*\/[\s\S]*?\/\* INITIAL_CHALLENGE_DATA_END \*\//;
+        if (blockRegex.test(fullHtml)) {
+          fullHtml = fullHtml.replace(blockRegex, replacementBlock);
+        }
+
+        return fullHtml;
       }
 
-      // Copy formatted summary to clipboard (using execCommand fallback for iframe compatibility)
+      // Copy text helper using execCommand (reliable across browsers & iframes)
+      function copyTextToClipboard(text, successMsg) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          showToast(successMsg);
+        } catch (err) {
+          showToast('Could not copy automatically.');
+        }
+        document.body.removeChild(textarea);
+      }
+
+      // Copy WhatsApp Standings Summary
       function copyStandingsSummary() {
-        const ranked = PARTICIPANTS
+        const ranked = state.participants
           .map(p => getParticipantStats(p))
           .sort((a, b) => b.total - a.total || a.person.localeCompare(b.person));
 
         const currentDayName = DAYS[state.selectedDayIndex].key;
+        const cleanPublicUrl = window.location.origin + window.location.pathname;
+
         const lines = [
           `🕌 *Weekly On-Time Prayer Challenge*`,
-          `📅 Sun – Sat (Updated: ${currentDayName})`,
+          `📅 Sun – Sat (Day: ${currentDayName})`,
           `────────────────────`
         ];
 
@@ -899,26 +1296,28 @@
         });
 
         lines.push(`────────────────────`);
+        if (cleanPublicUrl.startsWith('http')) {
+          lines.push(`📊 Live Board: ${cleanPublicUrl}`);
+        }
         lines.push(`Keep praying on time! 🤲`);
 
-        const textToCopy = lines.join('\n');
-
-        const textarea = document.createElement('textarea');
-        textarea.value = textToCopy;
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        textarea.select();
-        try {
-          document.execCommand('copy');
-          showToast('Standings copied! Ready to paste in WhatsApp.');
-        } catch (err) {
-          showToast('Could not copy standings.');
-        }
-        document.body.removeChild(textarea);
+        copyTextToClipboard(lines.join('\n'), 'Standings copied! Ready to paste in WhatsApp.');
       }
 
-      // Render entire UI
+      // HTML Escape helpers
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function escapeAttr(str) {
+        return String(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      // Render Entire UI
       function renderAll() {
         renderLeaderboard();
         renderDayTabs();
@@ -926,17 +1325,126 @@
         renderFullWeekMatrix();
       }
 
-      // Bind global controls
+      // Bind Event Listeners
       function bindEvents() {
         document.getElementById('viewDayBtn').addEventListener('click', () => setViewMode('day'));
         document.getElementById('viewWeekBtn').addEventListener('click', () => setViewMode('week'));
-        document.getElementById('shareBtn').addEventListener('click', copyStandingsSummary);
-        document.getElementById('exportBackupBtn').addEventListener('click', exportBackupFile);
+        document.getElementById('shareWhatsAppBtn').addEventListener('click', copyStandingsSummary);
 
-        const importInput = document.getElementById('importFileInput');
-        document.getElementById('importBackupBtn').addEventListener('click', () => importInput.click());
-        importInput.addEventListener('change', handleImportFile);
+        // Copy Clean Public Link (strips ?admin=1)
+        document.getElementById('copyPublicLinkBtn').addEventListener('click', () => {
+          const cleanUrl = window.location.origin + window.location.pathname;
+          copyTextToClipboard(cleanUrl, 'Public Read-Only link copied! Share it with friends.');
+        });
 
+        // Admin Login Modal
+        const pinModal = document.getElementById('pinModal');
+        const pinInput = document.getElementById('adminPinInput');
+        const pinError = document.getElementById('pinErrorMsg');
+
+        document.getElementById('adminLoginBtn').addEventListener('click', () => {
+          pinError.classList.add('hidden');
+          pinInput.value = '';
+          pinModal.classList.remove('hidden');
+          pinModal.classList.add('flex');
+          pinInput.focus();
+        });
+
+        document.getElementById('cancelPinBtn').addEventListener('click', () => {
+          pinModal.classList.add('hidden');
+          pinModal.classList.remove('flex');
+        });
+
+        document.getElementById('pinForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          if (pinInput.value.trim() === ADMIN_PIN) {
+            pinModal.classList.add('hidden');
+            pinModal.classList.remove('flex');
+            unlockAdmin();
+          } else {
+            pinError.classList.remove('hidden');
+            pinInput.select();
+          }
+        });
+
+        // Lock Admin Mode
+        document.getElementById('adminLogoutBtn').addEventListener('click', lockAdmin);
+
+        // Add Participant Form
+        document.getElementById('addParticipantForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const input = document.getElementById('newParticipantInput');
+          addParticipant(input.value);
+          input.value = '';
+        });
+
+        // Reload Published Data (discard local draft)
+        document.getElementById('syncFromPublishedBtn').addEventListener('click', () => {
+          localStorage.removeItem(STORAGE_KEY);
+          const published = sanitizeChallengeData(INITIAL_CHALLENGE_DATA);
+          state.participants = published.participants;
+          state.records = published.records;
+          state.lastSavedAt = null;
+          updateHeaderModeUI(false);
+          renderAll();
+          showToast('Synced with published GitHub data.');
+        });
+
+        // Rename Participant Modal
+        const renameModal = document.getElementById('renameModal');
+        document.getElementById('cancelRenameBtn').addEventListener('click', () => {
+          renameModal.classList.add('hidden');
+          renameModal.classList.remove('flex');
+        });
+        document.getElementById('renameForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const newVal = document.getElementById('renameInput').value;
+          renameParticipant(personBeingRenamed, newVal);
+          renameModal.classList.add('hidden');
+          renameModal.classList.remove('flex');
+        });
+
+        // Remove Participant Modal
+        const removePersonModal = document.getElementById('removePersonModal');
+        document.getElementById('cancelRemovePersonBtn').addEventListener('click', () => {
+          removePersonModal.classList.add('hidden');
+          removePersonModal.classList.remove('flex');
+        });
+        document.getElementById('confirmRemovePersonBtn').addEventListener('click', () => {
+          removeParticipant(personBeingRemoved);
+          removePersonModal.classList.add('hidden');
+          removePersonModal.classList.remove('flex');
+        });
+
+        // Publish / Export for GitHub Modal
+        const publishModal = document.getElementById('publishModal');
+        document.getElementById('openPublishModalBtn').addEventListener('click', () => {
+          publishModal.classList.remove('hidden');
+          publishModal.classList.add('flex');
+        });
+        document.getElementById('closePublishModalBtn').addEventListener('click', () => {
+          publishModal.classList.add('hidden');
+          publishModal.classList.remove('flex');
+        });
+        document.getElementById('copyUpdatedHtmlBtn').addEventListener('click', () => {
+          const updatedHtml = generatePublishableHtml();
+          copyTextToClipboard(updatedHtml, 'Updated index.html copied! Paste it into your GitHub repo.');
+        });
+        document.getElementById('downloadUpdatedHtmlBtn').addEventListener('click', () => {
+          const updatedHtml = generatePublishableHtml();
+          const blob = new Blob([updatedHtml], { type: 'text/html' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'index.html';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast('Downloaded updated index.html! Upload it to GitHub.');
+        });
+
+        // Reset Week Modal
         const resetModal = document.getElementById('resetModal');
         document.getElementById('resetModalBtn').addEventListener('click', () => {
           resetModal.classList.remove('hidden');
@@ -947,55 +1455,43 @@
           resetModal.classList.remove('flex');
         });
         document.getElementById('confirmResetBtn').addEventListener('click', () => {
-          state.records = createEmptyRecords();
-          saveState(true);
+          if (!state.isAdmin) return;
+          state.participants.forEach(p => {
+            state.records[p] = createBlankWeekForPerson();
+          });
+          saveAdminDraft(true);
           renderAll();
           resetModal.classList.add('hidden');
           resetModal.classList.remove('flex');
-          showToast('Week has been reset to 0/35 for everyone.');
+          showToast('Week reset to 0/35. Click "Publish" to update GitHub.');
         });
 
-        // Close modal when clicking backdrop
-        resetModal.addEventListener('click', (e) => {
-          if (e.target === resetModal) {
-            resetModal.classList.add('hidden');
-            resetModal.classList.remove('flex');
-          }
-        });
-
-        // Flush state on tab close, app switch, or page hide
-        window.addEventListener('beforeunload', () => saveState(false));
-        document.addEventListener('visibilitychange', () => {
-          if (document.visibilityState === 'hidden') {
-            saveState(false);
-          }
-        });
-
-        // Sync across multiple open tabs in real time
-        window.addEventListener('storage', (e) => {
-          if (e.key === STORAGE_KEY && e.newValue) {
-            try {
-              const synced = sanitizePayload(JSON.parse(e.newValue));
-              if (synced.hasData) {
-                state.records = synced.records;
-                state.selectedDayIndex = synced.selectedDayIndex;
-                state.viewMode = synced.viewMode;
-                state.lastSavedAt = synced.lastSavedAt;
-                updateAutoSaveIndicator(state.lastSavedAt, false);
-                setViewMode(state.viewMode, false);
-              }
-            } catch (err) {
-              // Ignore malformed cross-tab payloads
+        // Close modals on backdrop click
+        [pinModal, publishModal, renameModal, removePersonModal, resetModal].forEach(modal => {
+          modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+              modal.classList.add('hidden');
+              modal.classList.remove('flex');
             }
-          }
+          });
         });
+
+        // Flush draft before page close
+        window.addEventListener('beforeunload', () => saveAdminDraft(false));
       }
 
-      // Boot application on load
+      // Boot Application
       window.addEventListener('DOMContentLoaded', async () => {
-        await loadState();
+        await initializeData();
         bindEvents();
-        setViewMode(state.viewMode, false);
+        updateHeaderModeUI(false);
+        setViewMode(state.viewMode);
+
+        // If opened with ?admin=1 and not yet unlocked, prompt PIN automatically
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('admin') === '1' && !state.isAdmin) {
+          document.getElementById('adminLoginBtn').click();
+        }
       });
     })();
   </script>
