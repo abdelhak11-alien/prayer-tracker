@@ -145,6 +145,13 @@
         </form>
 
         <div class="flex items-center gap-2 text-xs text-emerald-200">
+          <button id="exportJsonBtn" type="button" class="px-3 py-2 rounded-xl bg-emerald-900/80 hover:bg-emerald-800 border border-emerald-700/70 text-emerald-100 font-medium transition-colors cursor-pointer" title="Download a JSON backup of your current progress">
+            Export JSON
+          </button>
+          <button id="importJsonBtn" type="button" class="px-3 py-2 rounded-xl bg-emerald-900/80 hover:bg-emerald-800 border border-emerald-700/70 text-emerald-100 font-medium transition-colors cursor-pointer" title="Restore progress from a JSON backup file">
+            Import JSON
+          </button>
+          <input type="file" id="importJsonFileInput" accept=".json,application/json" class="hidden" />
           <button id="syncFromPublishedBtn" type="button" class="px-3 py-2 rounded-xl bg-emerald-900/80 hover:bg-emerald-800 border border-emerald-700/70 text-emerald-100 font-medium transition-colors cursor-pointer" title="Discard local draft and reload data currently published in this file">
             Reload Published Data
           </button>
@@ -259,19 +266,20 @@
       </div>
       <h3 class="text-lg font-bold text-slate-900">Admin Unlock (Abdelhak)</h3>
       <p class="text-xs text-slate-600 mt-1">
-        Enter your Admin PIN to unlock prayer editing, participant management, and GitHub publishing.
+        Enter your 8-digit Admin password to unlock prayer editing, participant management, and GitHub publishing.
       </p>
       <div class="mt-4">
-        <label for="adminPinInput" class="block text-xs font-semibold text-slate-700 mb-1.5">Admin PIN</label>
+        <label for="adminPinInput" class="block text-xs font-semibold text-slate-700 mb-1.5">Admin Password (8 digits)</label>
         <input
           type="password"
           id="adminPinInput"
           inputmode="numeric"
+          maxlength="8"
           autocomplete="off"
-          placeholder="••••"
+          placeholder="••••••••"
           class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-slate-900 font-bold tracking-widest text-center text-lg focus:outline-none focus:ring-2 focus:ring-emerald-600"
         />
-        <p id="pinErrorMsg" class="hidden text-xs text-rose-600 font-medium mt-1.5">Incorrect PIN. Please try again.</p>
+        <p id="pinErrorMsg" class="hidden text-xs text-rose-600 font-medium mt-1.5">Incorrect password. Please try again.</p>
       </div>
       <div class="mt-6 flex items-center justify-end gap-2.5">
         <button id="cancelPinBtn" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer">
@@ -392,10 +400,10 @@
      * =========================================================================
      * - Friends visiting your GitHub Pages URL automatically see the data stored
      *   inside INITIAL_CHALLENGE_DATA below in strict Read-Only Mode.
-     * - Only you (Abdelhak) can unlock Admin Mode using ADMIN_PIN (default: 2008)
+     * - Only you (Abdelhak) can unlock Admin Mode using ADMIN_PIN
      *   or by opening the link with ?admin=1.
      */
-    const ADMIN_PIN = "2008";
+    const ADMIN_PIN = "19731958";
 
     /* INITIAL_CHALLENGE_DATA_START */
     const INITIAL_CHALLENGE_DATA = {
@@ -1376,6 +1384,59 @@
           const input = document.getElementById('newParticipantInput');
           addParticipant(input.value);
           input.value = '';
+        });
+
+        // Export JSON Backup
+        document.getElementById('exportJsonBtn').addEventListener('click', () => {
+          if (!state.isAdmin) return;
+          const backupPayload = {
+            app: 'Weekly Prayer Challenge Tracker',
+            exportedAt: new Date().toISOString(),
+            participants: state.participants,
+            records: state.records
+          };
+          const blob = new Blob([JSON.stringify(backupPayload, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `prayer-challenge-backup-${new Date().toISOString().slice(0, 10)}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast('JSON backup downloaded!');
+        });
+
+        // Import JSON Backup
+        const importJsonInput = document.getElementById('importJsonFileInput');
+        document.getElementById('importJsonBtn').addEventListener('click', () => {
+          if (!state.isAdmin) return;
+          importJsonInput.click();
+        });
+        importJsonInput.addEventListener('change', (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (!file || !state.isAdmin) return;
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            try {
+              const parsed = JSON.parse(evt.target.result);
+              if (!Array.isArray(parsed?.participants) || !parsed?.records) {
+                showToast('Invalid JSON backup file.');
+                return;
+              }
+              const sanitized = sanitizeChallengeData(parsed);
+              state.participants = sanitized.participants;
+              state.records = sanitized.records;
+              saveAdminDraft(true);
+              renderAll();
+              showToast('Progress restored from JSON backup!');
+            } catch (err) {
+              showToast('Could not read JSON backup file.');
+            } finally {
+              e.target.value = '';
+            }
+          };
+          reader.readAsText(file);
         });
 
         // Reload Published Data (discard local draft)
