@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Prayer Challenge | On-Time Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            emerald: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+              950: '#022c22',
+            },
+            gold: {
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-emerald-200 selection:text-emerald-900">
+
+  <!-- Top Navigation & Hero Header -->
+  <header class="bg-gradient-to-br from-emerald-950 via-emerald-900 to-slate-900 text-white shadow-lg border-b border-emerald-800/60">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-800/60 border border-emerald-700/60 text-amber-300 text-xs font-semibold tracking-wide uppercase mb-2">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1z"/></svg>
+            7-Day On-Time Prayer Challenge
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            Sunday to Saturday <span class="text-amber-400">Prayer Race</span>
+          </h1>
+          <p class="text-emerald-100/80 text-sm mt-1">
+            35 total prayers per week. Check off every prayer prayed strictly on time.
+          </p>
+          <!-- Live Auto-Save Status Pill -->
+          <div class="mt-2.5 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-950/60 border border-emerald-700/50 text-xs text-emerald-200" id="autoSaveBadge" aria-live="polite">
+            <span id="autoSaveDot" class="w-2 h-2 rounded-full bg-emerald-400 transition-transform duration-300"></span>
+            <span id="autoSaveText">Auto-save active</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="shareBtn" type="button" class="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-semibold text-sm shadow-md shadow-amber-500/20 transition-all cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            Copy Standings
+          </button>
+          <button id="exportBackupBtn" type="button" class="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-emerald-900/80 hover:bg-emerald-800 text-emerald-100 border border-emerald-700/70 font-medium text-sm transition-all cursor-pointer active:scale-95" title="Download a JSON backup file">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Export Backup
+          </button>
+          <button id="importBackupBtn" type="button" class="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-emerald-900/80 hover:bg-emerald-800 text-emerald-100 border border-emerald-700/70 font-medium text-sm transition-all cursor-pointer active:scale-95" title="Restore from a JSON backup file">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            Import Backup
+          </button>
+          <input type="file" id="importFileInput" accept=".json,application/json" class="hidden" />
+          <button id="resetModalBtn" type="button" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-emerald-900/80 hover:bg-rose-950/80 text-emerald-100 hover:text-rose-200 border border-emerald-700/70 hover:border-rose-700/70 font-medium text-sm transition-all cursor-pointer active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Reset Week
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 space-y-8">
+
+    <!-- Live Leaderboard Section -->
+    <section aria-labelledby="leaderboard-heading" class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-2 bg-slate-50/60">
+        <div class="flex items-center gap-2">
+          <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 text-amber-600">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clip-rule="evenodd"/></svg>
+          </span>
+          <h2 id="leaderboard-heading" class="text-lg font-bold text-slate-900">Live Standings</h2>
+        </div>
+        <span id="groupSummaryBadge" class="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+          0 / 210 Group Prayers
+        </span>
+      </div>
+
+      <!-- Leaderboard Cards Grid -->
+      <div id="leaderboardGrid" class="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+        <!-- Populated dynamically via JS -->
+      </div>
+    </section>
+
+    <!-- Daily Tracker Section -->
+    <section aria-labelledby="tracker-heading" class="space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 id="tracker-heading" class="text-lg font-bold text-slate-900">Daily Prayer Checklist</h2>
+          <p class="text-xs text-slate-500">Select a day below to mark on-time prayers for each competitor.</p>
+        </div>
+
+        <!-- View Switcher (Day View vs Full Week Matrix) -->
+        <div class="inline-flex rounded-xl bg-slate-200/70 p-1 self-start sm:self-auto">
+          <button id="viewDayBtn" type="button" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white text-emerald-800 shadow-sm cursor-pointer">
+            Day Focus
+          </button>
+          <button id="viewWeekBtn" type="button" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 cursor-pointer">
+            Full Week Overview
+          </button>
+        </div>
+      </div>
+
+      <!-- Day Selector Tabs (Sunday -> Saturday) -->
+      <div id="dayTabsContainer" class="grid grid-cols-7 gap-1.5 sm:gap-2 bg-white p-2 rounded-2xl shadow-sm border border-slate-200/80">
+        <!-- Populated dynamically via JS -->
+      </div>
+
+      <!-- Active Day Checklist Panel -->
+      <div id="dayFocusPanel" class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+        <div class="px-5 py-4 bg-emerald-950 text-white flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5">
+            <span id="activeDayTitle" class="text-lg font-bold tracking-tight">Sunday</span>
+            <span id="activeDayStats" class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-emerald-800 text-emerald-200">
+              0 / 30 completed
+            </span>
+          </div>
+          <span class="text-xs text-amber-300 font-medium">Tap a prayer pill to toggle</span>
+        </div>
+
+        <!-- Participant Rows for Selected Day -->
+        <div id="participantDayList" class="divide-y divide-slate-100">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Full Week Matrix Overview Panel (Hidden by default, toggleable) -->
+      <div id="fullWeekPanel" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+        <div class="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
+          <h3 class="font-bold text-base">7-Day Breakdown (Sunday – Saturday)</h3>
+          <span class="text-xs text-slate-300">Daily score out of 5</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                <th class="py-3.5 px-4 sticky left-0 bg-slate-50 z-10">Participant</th>
+                <th class="py-3.5 px-3 text-center">Sun</th>
+                <th class="py-3.5 px-3 text-center">Mon</th>
+                <th class="py-3.5 px-3 text-center">Tue</th>
+                <th class="py-3.5 px-3 text-center">Wed</th>
+                <th class="py-3.5 px-3 text-center">Thu</th>
+                <th class="py-3.5 px-3 text-center">Fri</th>
+                <th class="py-3.5 px-3 text-center">Sat</th>
+                <th class="py-3.5 px-4 text-right">Total</th>
+              </tr>
+            </thead>
+            <tbody id="weekMatrixBody" class="divide-y divide-slate-100 text-sm">
+              <!-- Populated dynamically via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 text-center text-xs text-slate-500 space-y-1">
+    <p>Progress is automatically saved locally on this device across browser sessions. May Allah accept everyone's prayers on time.</p>
+    <p class="font-semibold text-slate-600 tracking-wide">created by ABDELHAK FIQHI</p>
+  </footer>
+
+  <!-- Custom Reset Confirmation Modal (No browser confirm() used) -->
+  <div id="resetModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 transform transition-all">
+      <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mb-4">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      </div>
+      <h3 class="text-lg font-bold text-slate-900">Reset Entire Week?</h3>
+      <p class="text-sm text-slate-600 mt-1.5">
+        This will clear all checked prayers from Sunday to Saturday for Youssef, Abdelhak, Bolkert, Naim, Yahya, and Anas. This action cannot be undone.
+      </p>
+      <div class="mt-6 flex items-center justify-end gap-2.5">
+        <button id="cancelResetBtn" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer">
+          Cancel
+        </button>
+        <button id="confirmResetBtn" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold bg-rose-600 hover:bg-rose-700 text-white shadow-sm transition-colors cursor-pointer">
+          Yes, Reset Week
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-2.5 text-sm font-medium">
+    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+    <span id="toastMessage">Copied to clipboard!</span>
+  </div>
+
+  <script>
+    /**
+     * Weekly Prayer Challenge Tracker
+     * Starts on Sunday -> Saturday (7 days), 5 daily prayers each = 35 total prayers.
+     */
+    (function () {
+      // Exact required participant names
+      const PARTICIPANTS = [
+        'Youssef',
+        'Abdelhak',
+        'Bolkert',
+        'Naim',
+        'Yahya',
+        'Anas'
+      ];
+
+      // Week starting on Sunday
+      const DAYS = [
+        { key: 'Sunday', short: 'Sun' },
+        { key: 'Monday', short: 'Mon' },
+        { key: 'Tuesday', short: 'Tue' },
+        { key: 'Wednesday', short: 'Wed' },
+        { key: 'Thursday', short: 'Thu' },
+        { key: 'Friday', short: 'Fri' },
+        { key: 'Saturday', short: 'Sat' }
+      ];
+
+      // 5 Daily Prayers
+      const PRAYERS = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+      const MAX_WEEKLY_PRAYERS = DAYS.length * PRAYERS.length; // 35
+      const STORAGE_KEY = 'prayer_challenge_tracker_v2_data';
+      const LEGACY_STORAGE_KEY = 'prayer_challenge_tracker_v1';
+      const IDB_NAME = 'PrayerChallengeTrackerDB';
+      const IDB_STORE = 'trackerState';
+      const IDB_RECORD_KEY = 'currentWeekState';
+
+      // Application State
+      let state = {
+        selectedDayIndex: new Date().getDay(), // 0 = Sunday, 6 = Saturday
+        viewMode: 'day', // 'day' or 'week'
+        lastSavedAt: null,
+        records: {} // { [participant]: { [dayKey]: { [prayer]: boolean } } }
+      };
+
+      // Initialize clean default structure
+      function createEmptyRecords() {
+        const records = {};
+        PARTICIPANTS.forEach(person => {
+          records[person] = {};
+          DAYS.forEach(day => {
+            records[person][day.key] = {};
+            PRAYERS.forEach(prayer => {
+              records[person][day.key][prayer] = false;
+            });
+          });
+        });
+        return records;
+      }
+
+      // Normalize and sanitize any loaded payload into valid state
+      function sanitizePayload(parsed) {
+        const cleanRecords = createEmptyRecords();
+        let hasData = false;
+
+        if (parsed && parsed.records) {
+          PARTICIPANTS.forEach(person => {
+            DAYS.forEach(day => {
+              PRAYERS.forEach(prayer => {
+                if (
+                  parsed.records[person] &&
+                  parsed.records[person][day.key] &&
+                  typeof parsed.records[person][day.key][prayer] === 'boolean'
+                ) {
+                  cleanRecords[person][day.key][prayer] = parsed.records[person][day.key][prayer];
+                  hasData = true;
+                }
+              });
+            });
+          });
+        }
+
+        const validDayIndex =
+          typeof parsed?.selectedDayIndex === 'number' &&
+          parsed.selectedDayIndex >= 0 &&
+          parsed.selectedDayIndex < DAYS.length
+            ? parsed.selectedDayIndex
+            : new Date().getDay();
+
+        const validViewMode =
+          parsed?.viewMode === 'week' || parsed?.viewMode === 'day'
+            ? parsed.viewMode
+            : 'day';
+
+        const validTimestamp =
+          typeof parsed?.lastSavedAt === 'number' ? parsed.lastSavedAt : 0;
+
+        return {
+          hasData,
+          selectedDayIndex: validDayIndex,
+          viewMode: validViewMode,
+          lastSavedAt: validTimestamp,
+          records: cleanRecords
+        };
+      }
+
+      // IndexedDB helper: open database
+      function openIDB() {
+        return new Promise((resolve, reject) => {
+          if (!('indexedDB' in window)) {
+            reject(new Error('IndexedDB not supported'));
+            return;
+          }
+          const request = indexedDB.open(IDB_NAME, 1);
+          request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains(IDB_STORE)) {
+              db.createObjectStore(IDB_STORE);
+            }
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      // Read state from IndexedDB
+      async function readFromIDB() {
+        try {
+          const db = await openIDB();
+          return await new Promise((resolve) => {
+            const tx = db.transaction(IDB_STORE, 'readonly');
+            const store = tx.objectStore(IDB_STORE);
+            const req = store.get(IDB_RECORD_KEY);
+            req.onsuccess = () => resolve(req.result || null);
+            req.onerror = () => resolve(null);
+          });
+        } catch (err) {
+          return null;
+        }
+      }
+
+      // Write state to IndexedDB
+      async function writeToIDB(payload) {
+        try {
+          const db = await openIDB();
+          await new Promise((resolve, reject) => {
+            const tx = db.transaction(IDB_STORE, 'readwrite');
+            const store = tx.objectStore(IDB_STORE);
+            const req = store.put(payload, IDB_RECORD_KEY);
+            req.onsuccess = () => resolve();
+            req.onerror = () => reject(req.error);
+          });
+        } catch (err) {
+          // Fallback silently to localStorage if IDB is restricted
+        }
+      }
+
+      // Format timestamp for the header badge
+      function formatTime(ts) {
+        const d = ts ? new Date(ts) : new Date();
+        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      }
+
+      // Update live auto-save indicator in header
+      function updateAutoSaveIndicator(timestamp, pulse = false) {
+        const textEl = document.getElementById('autoSaveText');
+        const dotEl = document.getElementById('autoSaveDot');
+        if (!textEl || !dotEl) return;
+
+        if (timestamp) {
+          textEl.textContent = `✓ Auto-saved at ${formatTime(timestamp)}`;
+        } else {
+          textEl.textContent = '✓ Auto-save ready';
+        }
+
+        if (pulse) {
+          dotEl.classList.add('scale-150', 'bg-amber-300');
+          setTimeout(() => {
+            dotEl.classList.remove('scale-150', 'bg-amber-300');
+          }, 350);
+        }
+      }
+
+      // Load state from both localStorage and IndexedDB, recovering the freshest valid copy
+      async function loadState() {
+        let lsCandidate = null;
+        let idbCandidate = null;
+
+        // 1. Check primary localStorage (and migrate v1 if v2 is empty)
+        try {
+          const rawV2 = localStorage.getItem(STORAGE_KEY);
+          if (rawV2) {
+            lsCandidate = sanitizePayload(JSON.parse(rawV2));
+          } else {
+            const rawV1 = localStorage.getItem(LEGACY_STORAGE_KEY);
+            if (rawV1) {
+              lsCandidate = sanitizePayload(JSON.parse(rawV1));
+            }
+          }
+        } catch (err) {
+          console.error('Failed to read from localStorage:', err);
+        }
+
+        // 2. Check IndexedDB redundant backup
+        try {
+          const rawIDB = await readFromIDB();
+          if (rawIDB) {
+            idbCandidate = sanitizePayload(rawIDB);
+          }
+        } catch (err) {
+          console.error('Failed to read from IndexedDB:', err);
+        }
+
+        // 3. Pick whichever storage layer exists and has the newest timestamp
+        let chosen = null;
+        if (lsCandidate?.hasData && idbCandidate?.hasData) {
+          chosen = idbCandidate.lastSavedAt > lsCandidate.lastSavedAt ? idbCandidate : lsCandidate;
+        } else if (lsCandidate?.hasData) {
+          chosen = lsCandidate;
+        } else if (idbCandidate?.hasData) {
+          chosen = idbCandidate;
+        }
+
+        if (chosen) {
+          state.records = chosen.records;
+          state.selectedDayIndex = chosen.selectedDayIndex;
+          state.viewMode = chosen.viewMode;
+          state.lastSavedAt = chosen.lastSavedAt || Date.now();
+          // Re-sync both layers immediately so both are up-to-date
+          saveState(false);
+          updateAutoSaveIndicator(state.lastSavedAt, false);
+        } else {
+          state.records = createEmptyRecords();
+          state.selectedDayIndex = new Date().getDay();
+          state.viewMode = 'day';
+          state.lastSavedAt = null;
+          updateAutoSaveIndicator(null, false);
+        }
+      }
+
+      // Dual-layer persistent save (localStorage + IndexedDB)
+      function saveState(pulse = true) {
+        const now = Date.now();
+        state.lastSavedAt = now;
+
+        const payload = {
+          version: 2,
+          selectedDayIndex: state.selectedDayIndex,
+          viewMode: state.viewMode,
+          lastSavedAt: now,
+          records: state.records
+        };
+
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        } catch (err) {
+          console.error('Failed to save to localStorage:', err);
+        }
+
+        writeToIDB(payload);
+        updateAutoSaveIndicator(now, pulse);
+      }
+
+      // Calculate score for a single participant
+      function getParticipantStats(person) {
+        let total = 0;
+        const dailyCounts = {};
+        DAYS.forEach(day => {
+          let daySum = 0;
+          PRAYERS.forEach(prayer => {
+            if (state.records[person][day.key][prayer]) {
+              daySum++;
+              total++;
+            }
+          });
+          dailyCounts[day.key] = daySum;
+        });
+        const percentage = Math.round((total / MAX_WEEKLY_PRAYERS) * 100);
+        return { person, total, percentage, dailyCounts };
+      }
+
+      // Toggle a prayer status
+      function togglePrayer(person, dayKey, prayer) {
+        state.records[person][dayKey][prayer] = !state.records[person][dayKey][prayer];
+        saveState();
+        renderAll();
+      }
+
+      // Toggle all 5 prayers for a person on a specific day
+      function toggleAllForDay(person, dayKey) {
+        const allChecked = PRAYERS.every(p => state.records[person][dayKey][p]);
+        const targetValue = !allChecked;
+        PRAYERS.forEach(p => {
+          state.records[person][dayKey][p] = targetValue;
+        });
+        saveState();
+        renderAll();
+      }
+
+      // Show subtle toast message
+      let toastTimeout;
+      function showToast(message) {
+        const toast = document.getElementById('toastNotification');
+        const toastMsg = document.getElementById('toastMessage');
+        toastMsg.textContent = message;
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+          toast.classList.add('translate-y-20', 'opacity-0');
+        }, 2800);
+      }
+
+      // Render Live Leaderboard
+      function renderLeaderboard() {
+        const grid = document.getElementById('leaderboardGrid');
+        const groupBadge = document.getElementById('groupSummaryBadge');
+
+        const ranked = PARTICIPANTS
+          .map(p => getParticipantStats(p))
+          .sort((a, b) => b.total - a.total || a.person.localeCompare(b.person));
+
+        const totalGroupPrayers = ranked.reduce((acc, item) => acc + item.total, 0);
+        const maxGroupPrayers = PARTICIPANTS.length * MAX_WEEKLY_PRAYERS;
+        groupBadge.textContent = `${totalGroupPrayers} / ${maxGroupPrayers} Group Prayers`;
+
+        // Dense ranking calculation (handles ties gracefully)
+        let currentRank = 1;
+        ranked.forEach((item, index) => {
+          if (index > 0 && item.total < ranked[index - 1].total) {
+            currentRank = index + 1;
+          }
+          item.rank = item.total === 0 ? '-' : currentRank;
+        });
+
+        grid.innerHTML = ranked.map(item => {
+          const isPerfect = item.total === MAX_WEEKLY_PRAYERS;
+          let badgeHtml = `<span class="w-7 h-7 rounded-full bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200">${item.rank}</span>`;
+          let cardBorder = 'border-slate-200/90 bg-white';
+
+          if (item.total > 0) {
+            if (item.rank === 1) {
+              badgeHtml = `<span class="w-7 h-7 rounded-full bg-amber-100 text-amber-700 font-extrabold text-xs flex items-center justify-center border border-amber-300 shadow-xs" title="1st Place">👑</span>`;
+              cardBorder = 'border-amber-300 bg-gradient-to-br from-amber-50/50 to-white ring-1 ring-amber-200/60';
+            } else if (item.rank === 2) {
+              badgeHtml = `<span class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 font-extrabold text-xs flex items-center justify-center border border-slate-300" title="2nd Place">🥈</span>`;
+            } else if (item.rank === 3) {
+              badgeHtml = `<span class="w-7 h-7 rounded-full bg-orange-100 text-orange-800 font-extrabold text-xs flex items-center justify-center border border-orange-200" title="3rd Place">🥉</span>`;
+            }
+          }
+
+          const perfectBadge = isPerfect
+            ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white shadow-xs">★ 100% Perfect</span>`
+            : '';
+
+          return `
+            <div class="rounded-xl border ${cardBorder} p-4 transition-all hover:shadow-md flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  ${badgeHtml}
+                  <div class="truncate">
+                    <div class="flex items-center gap-1.5">
+                      <span class="font-bold text-slate-900 truncate">${item.person}</span>
+                      ${perfectBadge}
+                    </div>
+                    <span class="text-xs text-slate-500">${item.percentage}% on-time rate</span>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-lg font-extrabold text-emerald-700">${item.total}</span>
+                  <span class="text-xs font-medium text-slate-400">/ 35</span>
+                </div>
+              </div>
+
+              <!-- Progress Bar -->
+              <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/60">
+                <div class="h-full rounded-full transition-all duration-500 ${isPerfect ? 'bg-amber-500' : 'bg-emerald-600'}" style="width: ${item.percentage}%"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Render Sunday-Saturday Day Selector Tabs
+      function renderDayTabs() {
+        const container = document.getElementById('dayTabsContainer');
+        const todayIndex = new Date().getDay();
+
+        container.innerHTML = DAYS.map((day, idx) => {
+          const isSelected = idx === state.selectedDayIndex;
+          const isToday = idx === todayIndex;
+
+          // Count total completed prayers across all 6 participants for this day
+          let dayCompleted = 0;
+          PARTICIPANTS.forEach(p => {
+            PRAYERS.forEach(pr => {
+              if (state.records[p][day.key][pr]) dayCompleted++;
+            });
+          });
+          const maxForDay = PARTICIPANTS.length * PRAYERS.length; // 30
+          const isDayFull = dayCompleted === maxForDay;
+
+          const baseClass = isSelected
+            ? 'bg-emerald-700 text-white shadow-md shadow-emerald-700/20 ring-2 ring-emerald-700 ring-offset-1'
+            : 'bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900';
+
+          return `
+            <button
+              type="button"
+              data-day-index="${idx}"
+              class="day-tab-btn flex flex-col items-center justify-center py-2.5 px-1 rounded-xl transition-all cursor-pointer active:scale-95 ${baseClass}"
+            >
+              <span class="text-[11px] sm:text-xs font-bold tracking-tight">${day.short}</span>
+              <span class="text-[10px] mt-0.5 font-medium ${isSelected ? 'text-emerald-200' : isDayFull ? 'text-emerald-600 font-bold' : 'text-slate-400'}">
+                ${dayCompleted}/${maxForDay}
+              </span>
+              ${isToday ? `<span class="mt-1 w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-amber-400' : 'bg-emerald-500'}" title="Today"></span>` : '<span class="mt-1 h-1.5"></span>'}
+            </button>
+          `;
+        }).join('');
+
+        // Attach click events
+        container.querySelectorAll('.day-tab-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            state.selectedDayIndex = Number(btn.dataset.dayIndex);
+            saveState(true);
+            if (state.viewMode !== 'day') {
+              setViewMode('day', false);
+            } else {
+              renderDayTabs();
+              renderDayFocus();
+            }
+          });
+        });
+      }
+
+      // Render Checklist for Active Day
+      function renderDayFocus() {
+        const currentDay = DAYS[state.selectedDayIndex];
+        const titleEl = document.getElementById('activeDayTitle');
+        const statsEl = document.getElementById('activeDayStats');
+        const listEl = document.getElementById('participantDayList');
+
+        titleEl.textContent = currentDay.key;
+
+        let totalDayChecks = 0;
+        PARTICIPANTS.forEach(p => {
+          PRAYERS.forEach(pr => {
+            if (state.records[p][currentDay.key][pr]) totalDayChecks++;
+          });
+        });
+        statsEl.textContent = `${totalDayChecks} / ${PARTICIPANTS.length * 5} completed`;
+
+        listEl.innerHTML = PARTICIPANTS.map(person => {
+          const dayRecord = state.records[person][currentDay.key];
+          const personDayCount = PRAYERS.filter(p => dayRecord[p]).length;
+          const allFiveDone = personDayCount === 5;
+
+          const prayerButtonsHtml = PRAYERS.map(prayer => {
+            const checked = dayRecord[prayer];
+            return `
+              <button
+                type="button"
+                data-person="${person}"
+                data-day="${currentDay.key}"
+                data-prayer="${prayer}"
+                aria-pressed="${checked}"
+                class="prayer-toggle-btn group flex items-center justify-center gap-1.5 px-3 py-2.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all duration-150 cursor-pointer active:scale-95 select-none ${
+                  checked
+                    ? 'bg-emerald-600 border-emerald-600 text-white shadow-xs shadow-emerald-600/20'
+                    : 'bg-slate-50 hover:bg-emerald-50/70 border-slate-200 text-slate-600 hover:border-emerald-300'
+                }"
+              >
+                <span class="w-4 h-4 rounded-md flex items-center justify-center transition-colors ${
+                  checked ? 'bg-white/20 text-white' : 'bg-white border border-slate-300 text-transparent group-hover:border-emerald-400'
+                }">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                </span>
+                <span>${prayer}</span>
+              </button>
+            `;
+          }).join('');
+
+          return `
+            <div class="p-4 sm:px-5 sm:py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 transition-colors ${allFiveDone ? 'bg-emerald-50/30' : 'hover:bg-slate-50/60'}">
+              <div class="flex items-center justify-between lg:justify-start gap-3 min-w-[165px]">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-full font-bold text-sm flex items-center justify-center shrink-0 ${
+                    allFiveDone ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-700 border border-slate-200'
+                  }">
+                    ${person.slice(0, 2).toUpperCase()}
+                  </div>
+                  <div>
+                    <div class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-1.5">
+                      ${person}
+                      ${allFiveDone ? '<span class="text-emerald-600 text-xs" title="All 5 prayers on time!">✓</span>' : ''}
+                    </div>
+                    <div class="text-xs text-slate-500">${personDayCount} / 5 today</div>
+                  </div>
+                </div>
+
+                <!-- Quick "All 5" Toggle Button -->
+                <button
+                  type="button"
+                  data-person="${person}"
+                  data-day="${currentDay.key}"
+                  class="toggle-all-btn text-xs font-semibold px-2.5 py-1.5 rounded-lg border transition-colors cursor-pointer ${
+                    allFiveDone
+                      ? 'bg-emerald-100/80 border-emerald-200 text-emerald-800 hover:bg-emerald-200/70'
+                      : 'bg-white border-slate-200 text-slate-500 hover:text-emerald-700 hover:border-emerald-300'
+                  }"
+                >
+                  ${allFiveDone ? 'Clear Day' : 'All 5'}
+                </button>
+              </div>
+
+              <!-- 5 Prayer Buttons Grid -->
+              <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 flex-1 max-w-2xl">
+                ${prayerButtonsHtml}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Attach listeners for individual prayer toggles
+        listEl.querySelectorAll('.prayer-toggle-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            togglePrayer(btn.dataset.person, btn.dataset.day, btn.dataset.prayer);
+          });
+        });
+
+        // Attach listeners for "All 5" toggles
+        listEl.querySelectorAll('.toggle-all-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            toggleAllForDay(btn.dataset.person, btn.dataset.day);
+          });
+        });
+      }
+
+      // Render 7-Day Full Matrix Table
+      function renderFullWeekMatrix() {
+        const tbody = document.getElementById('weekMatrixBody');
+        tbody.innerHTML = PARTICIPANTS.map(person => {
+          const stats = getParticipantStats(person);
+          const dayCells = DAYS.map((day, idx) => {
+            const count = stats.dailyCounts[day.key];
+            const isPerfectDay = count === 5;
+            return `
+              <td class="py-3 px-2 text-center">
+                <button
+                  type="button"
+                  data-jump-day="${idx}"
+                  class="jump-day-btn inline-flex items-center justify-center w-9 h-8 rounded-lg text-xs font-bold transition-transform hover:scale-105 cursor-pointer ${
+                    isPerfectDay
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : count > 0
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : 'bg-slate-100 text-slate-400'
+                  }"
+                  title="Click to edit ${person} on ${day.key}"
+                >
+                  ${count}/5
+                </button>
+              </td>
+            `;
+          }).join('');
+
+          return `
+            <tr class="hover:bg-slate-50/80 transition-colors">
+              <td class="py-3.5 px-4 font-bold text-slate-900 sticky left-0 bg-white z-10 border-r border-slate-100">
+                ${person}
+              </td>
+              ${dayCells}
+              <td class="py-3.5 px-4 text-right font-extrabold text-emerald-700">
+                ${stats.total}<span class="text-xs font-normal text-slate-400">/35</span>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        tbody.querySelectorAll('.jump-day-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            state.selectedDayIndex = Number(btn.dataset.jumpDay);
+            saveState(true);
+            setViewMode('day', false);
+          });
+        });
+      }
+
+      // Switch between Day Focus and Full Week Overview
+      function setViewMode(mode, shouldSave = true) {
+        state.viewMode = mode;
+        if (shouldSave) {
+          saveState(true);
+        }
+        const dayBtn = document.getElementById('viewDayBtn');
+        const weekBtn = document.getElementById('viewWeekBtn');
+        const dayPanel = document.getElementById('dayFocusPanel');
+        const weekPanel = document.getElementById('fullWeekPanel');
+
+        if (mode === 'day') {
+          dayBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white text-emerald-800 shadow-sm cursor-pointer';
+          weekBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 cursor-pointer';
+          dayPanel.classList.remove('hidden');
+          weekPanel.classList.add('hidden');
+        } else {
+          weekBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white text-emerald-800 shadow-sm cursor-pointer';
+          dayBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 cursor-pointer';
+          weekPanel.classList.remove('hidden');
+          dayPanel.classList.add('hidden');
+        }
+        renderAll();
+      }
+
+      // Export JSON Backup file
+      function exportBackupFile() {
+        const payload = {
+          app: 'Weekly Prayer Challenge Tracker',
+          version: 2,
+          exportedAt: new Date().toISOString(),
+          selectedDayIndex: state.selectedDayIndex,
+          viewMode: state.viewMode,
+          lastSavedAt: state.lastSavedAt || Date.now(),
+          records: state.records
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const dateStamp = new Date().toISOString().slice(0, 10);
+        a.href = url;
+        a.download = `prayer-challenge-backup-${dateStamp}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Backup JSON downloaded!');
+      }
+
+      // Import JSON Backup file
+      function handleImportFile(event) {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const parsed = JSON.parse(e.target.result);
+            const sanitized = sanitizePayload(parsed);
+            if (!sanitized.hasData) {
+              showToast('Invalid backup file format.');
+              return;
+            }
+            state.records = sanitized.records;
+            state.selectedDayIndex = sanitized.selectedDayIndex;
+            state.viewMode = sanitized.viewMode;
+            saveState(true);
+            setViewMode(state.viewMode, false);
+            showToast('Progress restored from backup!');
+          } catch (err) {
+            showToast('Could not read backup file.');
+          } finally {
+            event.target.value = '';
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      // Copy formatted summary to clipboard (using execCommand fallback for iframe compatibility)
+      function copyStandingsSummary() {
+        const ranked = PARTICIPANTS
+          .map(p => getParticipantStats(p))
+          .sort((a, b) => b.total - a.total || a.person.localeCompare(b.person));
+
+        const currentDayName = DAYS[state.selectedDayIndex].key;
+        const lines = [
+          `🕌 *Weekly On-Time Prayer Challenge*`,
+          `📅 Sun – Sat (Updated: ${currentDayName})`,
+          `────────────────────`
+        ];
+
+        ranked.forEach((item, index) => {
+          const medal = index === 0 && item.total > 0 ? '👑' : index === 1 && item.total > 0 ? '🥈' : index === 2 && item.total > 0 ? '🥉' : '▫️';
+          const perfectTag = item.total === MAX_WEEKLY_PRAYERS ? ' 🔥100%' : '';
+          lines.push(`${medal} *${item.person}*: ${item.total}/35 (${item.percentage}%)${perfectTag}`);
+        });
+
+        lines.push(`────────────────────`);
+        lines.push(`Keep praying on time! 🤲`);
+
+        const textToCopy = lines.join('\n');
+
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          showToast('Standings copied! Ready to paste in WhatsApp.');
+        } catch (err) {
+          showToast('Could not copy standings.');
+        }
+        document.body.removeChild(textarea);
+      }
+
+      // Render entire UI
+      function renderAll() {
+        renderLeaderboard();
+        renderDayTabs();
+        renderDayFocus();
+        renderFullWeekMatrix();
+      }
+
+      // Bind global controls
+      function bindEvents() {
+        document.getElementById('viewDayBtn').addEventListener('click', () => setViewMode('day'));
+        document.getElementById('viewWeekBtn').addEventListener('click', () => setViewMode('week'));
+        document.getElementById('shareBtn').addEventListener('click', copyStandingsSummary);
+        document.getElementById('exportBackupBtn').addEventListener('click', exportBackupFile);
+
+        const importInput = document.getElementById('importFileInput');
+        document.getElementById('importBackupBtn').addEventListener('click', () => importInput.click());
+        importInput.addEventListener('change', handleImportFile);
+
+        const resetModal = document.getElementById('resetModal');
+        document.getElementById('resetModalBtn').addEventListener('click', () => {
+          resetModal.classList.remove('hidden');
+          resetModal.classList.add('flex');
+        });
+        document.getElementById('cancelResetBtn').addEventListener('click', () => {
+          resetModal.classList.add('hidden');
+          resetModal.classList.remove('flex');
+        });
+        document.getElementById('confirmResetBtn').addEventListener('click', () => {
+          state.records = createEmptyRecords();
+          saveState(true);
+          renderAll();
+          resetModal.classList.add('hidden');
+          resetModal.classList.remove('flex');
+          showToast('Week has been reset to 0/35 for everyone.');
+        });
+
+        // Close modal when clicking backdrop
+        resetModal.addEventListener('click', (e) => {
+          if (e.target === resetModal) {
+            resetModal.classList.add('hidden');
+            resetModal.classList.remove('flex');
+          }
+        });
+
+        // Flush state on tab close, app switch, or page hide
+        window.addEventListener('beforeunload', () => saveState(false));
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'hidden') {
+            saveState(false);
+          }
+        });
+
+        // Sync across multiple open tabs in real time
+        window.addEventListener('storage', (e) => {
+          if (e.key === STORAGE_KEY && e.newValue) {
+            try {
+              const synced = sanitizePayload(JSON.parse(e.newValue));
+              if (synced.hasData) {
+                state.records = synced.records;
+                state.selectedDayIndex = synced.selectedDayIndex;
+                state.viewMode = synced.viewMode;
+                state.lastSavedAt = synced.lastSavedAt;
+                updateAutoSaveIndicator(state.lastSavedAt, false);
+                setViewMode(state.viewMode, false);
+              }
+            } catch (err) {
+              // Ignore malformed cross-tab payloads
+            }
+          }
+        });
+      }
+
+      // Boot application on load
+      window.addEventListener('DOMContentLoaded', async () => {
+        await loadState();
+        bindEvents();
+        setViewMode(state.viewMode, false);
+      });
+    })();
+  </script>
+</body>
+</html>
